@@ -1,14 +1,16 @@
 
 import React from 'react';
 import { Product } from '../types';
-import { Star, Plus } from 'lucide-react';
+import { Star, Plus, Heart } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
   onAddToCart: (p: Product) => void;
+  onToggleWishlist: (id: string) => void;
+  isWishlisted: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
   return (
     <div className="group bg-[#161618] border border-gray-800 hover:border-[#fa1e4e] transition-all duration-300 overflow-hidden relative">
       <div className="relative aspect-video overflow-hidden">
@@ -17,6 +19,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           alt={product.name} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
         />
+        
+        {/* Wishlist Button Overlay */}
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleWishlist(product.id);
+          }}
+          className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-10 ${
+            isWishlisted ? 'bg-[#fa1e4e] text-white' : 'bg-black/40 text-gray-400 hover:text-white'
+          }`}
+        >
+          <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
+        </button>
+
         {product.isNew && (
           <div className="absolute top-2 left-2 bg-[#fa1e4e] text-white text-[10px] font-bold px-2 py-1 rounded-sm font-orbitron uppercase">
             New Gear
