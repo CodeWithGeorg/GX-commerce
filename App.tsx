@@ -1,9 +1,10 @@
 
 import React, { useState, useMemo } from 'react';
-import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart, LayoutGrid } from 'lucide-react';
+import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
 import AIChat from './components/AIChat';
+import Profile from './components/Profile';
 import { Product, CartItem } from './types';
 import { PRODUCTS, CATEGORIES } from './constants';
 
@@ -25,12 +26,12 @@ const App: React.FC = () => {
     }
     
     // Category-based filtering (usually only relevant in Market/Search)
-    if (activeCategory !== 'All' && activeSection !== 'wishlist') {
+    if (activeCategory !== 'All' && activeSection !== 'wishlist' && activeSection !== 'profile') {
       list = list.filter(p => p.category === activeCategory);
     }
 
     // Search term filtering
-    if (searchTerm.trim() !== '') {
+    if (searchTerm.trim() !== '' && activeSection === 'search') {
       const term = searchTerm.toLowerCase();
       list = list.filter(p => 
         p.name.toLowerCase().includes(term) || 
@@ -65,6 +66,9 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'profile':
+        return <Profile />;
+        
       case 'search':
         return (
           <section className="container mx-auto px-8 py-12 animate-in fade-in duration-500">
@@ -247,7 +251,8 @@ const App: React.FC = () => {
         activeSection={activeSection}
         setActiveSection={(s) => {
           setActiveSection(s);
-          if (s !== 'search') setSearchTerm(''); // Clear search when leaving search section
+          if (s !== 'search') setSearchTerm(''); 
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
       />
 
