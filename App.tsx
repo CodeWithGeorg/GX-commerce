@@ -239,7 +239,7 @@ const App: React.FC = () => {
                 <span className="text-[10px] theme-text-secondary tracking-widest uppercase">The Gear of Tomorrow</span>
               </div>
             </div>
-            <p className="text-[10px] theme-text-secondary font-orbitron uppercase tracking-widest">&copy; 2024 GX CORP. ALL RIGS RESERVED.</p>
+            <p className="text-[10px] theme-text-secondary font-orbitron uppercase tracking-widest">&copy; 2025 GX CORP. ALL RIGS RESERVED.</p>
           </div>
         </footer>
       </main>
