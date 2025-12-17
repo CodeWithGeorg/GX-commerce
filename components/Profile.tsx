@@ -14,7 +14,7 @@ const Profile: React.FC = () => {
         
         {/* Left Column: User Summary */}
         <div className="lg:col-span-1 space-y-8">
-          <div className="bg-[#161618] border border-gray-800 p-8 relative overflow-hidden group">
+          <div className="theme-bg-secondary border theme-border p-8 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <Shield size={120} className="text-[#fa1e4e]" />
             </div>
@@ -24,33 +24,33 @@ const Profile: React.FC = () => {
                 <img 
                   src="https://api.dicebear.com/7.x/avataaars/svg?seed=GXGamer" 
                   alt="Avatar" 
-                  className="w-full h-full rounded-full bg-[#0b0b0d]"
+                  className="w-full h-full rounded-full theme-bg-primary"
                 />
               </div>
-              <h2 className="text-2xl font-orbitron font-black text-white mb-1">VANGUARD_01</h2>
+              <h2 className="text-2xl font-orbitron font-black theme-text-primary mb-1">VANGUARD_01</h2>
               <span className="text-[#fa1e4e] font-orbitron text-[10px] tracking-widest uppercase mb-6">Elite Tech Specialist</span>
               
-              <div className="w-full bg-[#0b0b0d] h-2 rounded-full mb-2 overflow-hidden">
+              <div className="w-full theme-bg-primary h-2 rounded-full mb-2 overflow-hidden border theme-border">
                 <div className="bg-[#fa1e4e] h-full w-[75%] shadow-[0_0_10px_#fa1e4e]" />
               </div>
-              <div className="flex justify-between w-full text-[10px] font-orbitron text-gray-500 uppercase">
+              <div className="flex justify-between w-full text-[10px] font-orbitron theme-text-secondary uppercase">
                 <span>Level 42</span>
                 <span>Next Rank: Commander</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-[#161618] border border-gray-800 p-6">
-            <h3 className="text-white font-orbitron font-bold text-sm mb-6 flex items-center gap-2">
+          <div className="theme-bg-secondary border theme-border p-6 shadow-md">
+            <h3 className="theme-text-primary font-orbitron font-bold text-sm mb-6 flex items-center gap-2">
               <Award size={18} className="text-[#fa1e4e]" />
               GX REWARDS
             </h3>
             <div className="space-y-4">
-              <div className="flex justify-between items-center bg-[#0b0b0d] p-4 rounded-sm border border-gray-800">
-                <span className="text-gray-400 text-xs font-orbitron">TOTAL CREDITS</span>
-                <span className="text-white font-orbitron font-bold">12,450 XP</span>
+              <div className="flex justify-between items-center theme-bg-primary p-4 rounded-sm border theme-border">
+                <span className="theme-text-secondary text-xs font-orbitron">TOTAL CREDITS</span>
+                <span className="theme-text-primary font-orbitron font-bold">12,450 XP</span>
               </div>
-              <button className="w-full py-3 bg-[#252528] hover:bg-[#fa1e4e] text-white text-xs font-orbitron font-bold transition-all rounded-sm">
+              <button className="w-full py-3 theme-bg-tertiary hover:bg-[#fa1e4e] hover:text-white theme-text-primary text-xs font-orbitron font-bold transition-all rounded-sm border theme-border">
                 REDEEM GEAR
               </button>
             </div>
@@ -59,28 +59,28 @@ const Profile: React.FC = () => {
 
         {/* Right Column: Details & Activity */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-[#161618] border border-gray-800 p-8">
-            <h3 className="text-xl font-orbitron font-black text-white mb-8 flex items-center gap-3">
+          <div className="theme-bg-secondary border theme-border p-8 shadow-lg">
+            <h3 className="text-xl font-orbitron font-black theme-text-primary mb-8 flex items-center gap-3">
               <Package size={24} className="text-[#fa1e4e]" />
-              MISSION LOG <span className="text-gray-600">/ ORDERS</span>
+              MISSION LOG <span className="theme-text-secondary">/ ORDERS</span>
             </h3>
             
             <div className="space-y-4">
               {mockOrders.map(order => (
-                <div key={order.id} className="flex items-center justify-between p-6 bg-[#0b0b0d] border border-gray-800 hover:border-[#fa1e4e]/50 transition-colors group">
+                <div key={order.id} className="flex items-center justify-between p-6 theme-bg-primary border theme-border hover:border-[#fa1e4e]/50 transition-colors group">
                   <div className="flex gap-6 items-center">
-                    <div className="w-12 h-12 bg-[#1a1a1c] flex items-center justify-center border border-gray-800 group-hover:border-[#fa1e4e] transition-colors">
-                      <Zap size={20} className="text-gray-500 group-hover:text-[#fa1e4e]" />
+                    <div className="w-12 h-12 theme-bg-tertiary flex items-center justify-center border theme-border group-hover:border-[#fa1e4e] transition-colors">
+                      <Zap size={20} className="theme-text-secondary group-hover:text-[#fa1e4e]" />
                     </div>
                     <div>
-                      <p className="text-white font-orbitron font-bold text-sm">{order.id}</p>
-                      <p className="text-gray-500 text-[10px] uppercase font-orbitron">{order.date}</p>
+                      <p className="theme-text-primary font-orbitron font-bold text-sm">{order.id}</p>
+                      <p className="theme-text-secondary text-[10px] uppercase font-orbitron">{order.date}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-white font-orbitron font-bold">KSh {order.total.toLocaleString()}</p>
+                    <p className="theme-text-primary font-orbitron font-bold">KSh {order.total.toLocaleString()}</p>
                     <span className={`text-[10px] uppercase font-orbitron px-2 py-1 rounded-sm ${
-                      order.status === 'Delivered' ? 'bg-green-500/10 text-green-500' : 'bg-blue-500/10 text-blue-500'
+                      order.status === 'Delivered' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'
                     }`}>
                       {order.status}
                     </span>
@@ -91,19 +91,19 @@ const Profile: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-[#161618] border border-gray-800 p-8 hover:border-[#fa1e4e] transition-all cursor-pointer group">
+            <div className="theme-bg-secondary border theme-border p-8 hover:border-[#fa1e4e] transition-all cursor-pointer group shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 <Settings className="text-[#fa1e4e] group-hover:rotate-45 transition-transform" />
-                <h4 className="text-white font-orbitron font-bold">GRID SETTINGS</h4>
+                <h4 className="theme-text-primary font-orbitron font-bold">GRID SETTINGS</h4>
               </div>
-              <p className="text-gray-500 text-xs">Configure your hardware interface and security protocols.</p>
+              <p className="theme-text-secondary text-xs">Configure your hardware interface and security protocols.</p>
             </div>
-            <div className="bg-[#161618] border border-gray-800 p-8 hover:border-red-500 transition-all cursor-pointer group">
+            <div className="theme-bg-secondary border theme-border p-8 hover:border-red-500 transition-all cursor-pointer group shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 <LogOut className="text-red-500 group-hover:-translate-x-1 transition-transform" />
-                <h4 className="text-white font-orbitron font-bold">TERMINATE SESSION</h4>
+                <h4 className="theme-text-primary font-orbitron font-bold">TERMINATE SESSION</h4>
               </div>
-              <p className="text-gray-500 text-xs">Safely logout and clear local cache buffers.</p>
+              <p className="theme-text-secondary text-xs">Safely logout and clear local cache buffers.</p>
             </div>
           </div>
         </div>
