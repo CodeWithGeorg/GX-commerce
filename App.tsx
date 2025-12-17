@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
 import AIChat from './components/AIChat';
 import Profile from './components/Profile';
+import Trailers from './components/Trailers';
 import { Product, CartItem } from './types';
 import { PRODUCTS, CATEGORIES } from './constants';
 
@@ -25,8 +26,8 @@ const App: React.FC = () => {
       list = list.filter(p => wishlist.includes(p.id));
     }
     
-    // Category-based filtering (usually only relevant in Market/Search)
-    if (activeCategory !== 'All' && activeSection !== 'wishlist' && activeSection !== 'profile') {
+    // Category-based filtering
+    if (activeCategory !== 'All' && !['wishlist', 'profile', 'trailers'].includes(activeSection)) {
       list = list.filter(p => p.category === activeCategory);
     }
 
@@ -68,6 +69,9 @@ const App: React.FC = () => {
     switch (activeSection) {
       case 'profile':
         return <Profile />;
+        
+      case 'trailers':
+        return <Trailers />;
         
       case 'search':
         return (
@@ -185,7 +189,10 @@ const App: React.FC = () => {
                   >
                     BROWSE GEAR
                   </button>
-                  <button className="border border-gray-700 hover:border-white text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all">
+                  <button 
+                    onClick={() => setActiveSection('trailers')}
+                    className="border border-gray-700 hover:border-white text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all"
+                  >
                     TRAILER
                   </button>
                 </div>
