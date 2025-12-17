@@ -38,21 +38,21 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 right-0 w-full sm:w-[400px] h-screen bg-[#0b0b0d] border-l border-gray-800 z-[60] flex flex-col shadow-2xl">
-      <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-[#1a1a1c]">
+    <div className="fixed top-0 right-0 w-full sm:w-[400px] h-screen theme-bg-primary border-l theme-border z-[60] flex flex-col shadow-2xl transition-colors duration-300">
+      <div className="p-4 border-b theme-border flex justify-between items-center theme-bg-tertiary">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-[#fa1e4e] rounded-full flex items-center justify-center animate-pulse">
             <Bot size={18} className="text-white" />
           </div>
           <div>
-            <h2 className="text-white font-orbitron font-bold text-sm">GX SPECIALIST</h2>
+            <h2 className="theme-text-primary font-orbitron font-bold text-sm">GX SPECIALIST</h2>
             <div className="flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-              <span className="text-[10px] text-gray-400 uppercase">System Online</span>
+              <span className="text-[10px] theme-text-secondary uppercase">System Online</span>
             </div>
           </div>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+        <button onClick={onClose} className="theme-text-secondary hover:theme-text-primary transition-colors">
           <X size={20} />
         </button>
       </div>
@@ -62,8 +62,8 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] p-3 rounded-lg text-sm ${
               m.role === 'user' 
-                ? 'bg-[#fa1e4e] text-white rounded-br-none' 
-                : 'bg-[#252528] text-gray-200 border border-gray-700 rounded-bl-none'
+                ? 'bg-[#fa1e4e] text-white rounded-br-none shadow-md' 
+                : 'theme-bg-secondary theme-text-primary border theme-border rounded-bl-none'
             }`}>
               {m.text}
             </div>
@@ -71,16 +71,16 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-[#252528] p-3 rounded-lg flex gap-1">
-              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" />
-              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-              <span className="w-1 h-1 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+            <div className="theme-bg-secondary p-3 rounded-lg flex gap-1 border theme-border">
+              <span className="w-1 h-1 bg-[#fa1e4e] rounded-full animate-bounce" />
+              <span className="w-1 h-1 bg-[#fa1e4e] rounded-full animate-bounce [animation-delay:0.2s]" />
+              <span className="w-1 h-1 bg-[#fa1e4e] rounded-full animate-bounce [animation-delay:0.4s]" />
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-4 border-t border-gray-800 bg-[#1a1a1c]">
+      <div className="p-4 border-t theme-border theme-bg-tertiary">
         <div className="relative">
           <input 
             type="text" 
@@ -88,12 +88,12 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Ask for recommendations..."
-            className="w-full bg-[#0b0b0d] border border-gray-700 focus:border-[#fa1e4e] outline-none text-white text-sm rounded-md py-3 pl-4 pr-12 transition-all"
+            className="w-full theme-bg-primary border theme-border focus:border-[#fa1e4e] outline-none theme-text-primary text-sm rounded-md py-3 pl-4 pr-12 transition-all"
           />
           <button 
             onClick={handleSend}
             disabled={loading}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#fa1e4e] hover:text-white transition-colors disabled:opacity-50"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#fa1e4e] hover:text-[#ff4e7e] transition-colors disabled:opacity-50"
           >
             <Send size={18} />
           </button>
