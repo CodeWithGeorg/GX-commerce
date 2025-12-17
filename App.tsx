@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2 } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart, LayoutGrid } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
 import AIChat from './components/AIChat';
@@ -11,12 +11,36 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('market');
   const [activeCategory, setActiveCategory] = useState('All');
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [wishlist, setWishlist] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredProducts = activeCategory === 'All' 
-    ? PRODUCTS 
-    : PRODUCTS.filter(p => p.category === activeCategory);
+  const filteredProducts = useMemo(() => {
+    let list = PRODUCTS;
+    
+    // Section-based filtering
+    if (activeSection === 'wishlist') {
+      list = list.filter(p => wishlist.includes(p.id));
+    }
+    
+    // Category-based filtering (usually only relevant in Market/Search)
+    if (activeCategory !== 'All' && activeSection !== 'wishlist') {
+      list = list.filter(p => p.category === activeCategory);
+    }
+
+    // Search term filtering
+    if (searchTerm.trim() !== '') {
+      const term = searchTerm.toLowerCase();
+      list = list.filter(p => 
+        p.name.toLowerCase().includes(term) || 
+        p.description.toLowerCase().includes(term) ||
+        p.category.toLowerCase().includes(term)
+      );
+    }
+
+    return list;
+  }, [activeSection, activeCategory, searchTerm, wishlist]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -26,6 +50,11 @@ const App: React.FC = () => {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+    setIsCartOpen(true);
+  };
+
+  const toggleWishlist = (id: string) => {
+    setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
   const removeFromCart = (id: string) => {
@@ -34,98 +63,198 @@ const App: React.FC = () => {
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'search':
+        return (
+          <section className="container mx-auto px-8 py-12 animate-in fade-in duration-500">
+            <div className="mb-12">
+              <h2 className="text-4xl font-orbitron font-black mb-6 flex items-center gap-4">
+                <Search size={32} className="text-[#fa1e4e]" />
+                GLOBAL <span className="text-[#fa1e4e]">SEARCH</span>
+              </h2>
+              <div className="relative group max-w-2xl">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Search size={20} className="text-gray-500 group-focus-within:text-[#fa1e4e] transition-colors" />
+                </div>
+                <input 
+                  autoFocus
+                  type="text"
+                  placeholder="Scan hardware database..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-[#161618] border border-gray-800 focus:border-[#fa1e4e] outline-none text-white font-orbitron py-4 pl-12 pr-6 rounded-sm transition-all text-xl"
+                />
+              </div>
+            </div>
+
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map(p => (
+                  <ProductCard 
+                    key={p.id} 
+                    product={p} 
+                    onAddToCart={addToCart} 
+                    onToggleWishlist={toggleWishlist}
+                    isWishlisted={wishlist.includes(p.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-20 text-center border border-dashed border-gray-800 rounded-lg">
+                <p className="text-gray-500 font-orbitron text-lg">No matching signals found in the network.</p>
+              </div>
+            )}
+          </section>
+        );
+
+      case 'wishlist':
+        return (
+          <section className="container mx-auto px-8 py-12 animate-in fade-in duration-500">
+            <div className="mb-12">
+              <h2 className="text-4xl font-orbitron font-black mb-2 flex items-center gap-4">
+                <Heart size={32} className="text-[#fa1e4e]" />
+                SAVED <span className="text-[#fa1e4e]">TARGETS</span>
+              </h2>
+              <p className="text-gray-500 font-orbitron text-xs tracking-widest uppercase">Your curated high-performance list</p>
+            </div>
+
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map(p => (
+                  <ProductCard 
+                    key={p.id} 
+                    product={p} 
+                    onAddToCart={addToCart} 
+                    onToggleWishlist={toggleWishlist}
+                    isWishlisted={wishlist.includes(p.id)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="py-20 text-center border border-dashed border-gray-800 rounded-lg">
+                <p className="text-gray-500 font-orbitron text-lg">Wishlist protocol empty. Mark targets to save them here.</p>
+                <button 
+                  onClick={() => setActiveSection('market')}
+                  className="mt-6 text-[#fa1e4e] font-orbitron text-sm underline hover:text-white transition-colors"
+                >
+                  Return to Market
+                </button>
+              </div>
+            )}
+          </section>
+        );
+
+      default: // 'market'
+        return (
+          <>
+            <section className="relative h-[400px] overflow-hidden">
+              <div className="absolute inset-0">
+                <img 
+                  src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920" 
+                  alt="Hero" 
+                  className="w-full h-full object-cover opacity-30"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0b0b0d] via-[#0b0b0d]/80 to-transparent" />
+              </div>
+
+              <div className="relative h-full container mx-auto px-8 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-4 text-[#fa1e4e]">
+                  <Zap size={20} fill="currentColor" />
+                  <span className="font-orbitron tracking-widest text-sm uppercase">Limited Edition Series</span>
+                </div>
+                <h1 className="text-6xl md:text-8xl font-orbitron font-black leading-none mb-6">
+                  BEYOND <br />
+                  <span className="text-[#fa1e4e] gx-glow">LIMITS.</span>
+                </h1>
+                <p className="max-w-xl text-gray-400 text-lg mb-8">
+                  Upgrade your setup with the world's most aggressive hardware. 
+                  Powered by GX architecture for gamers who demand nothing less than perfection in Kenya.
+                </p>
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => {
+                      const el = document.getElementById('market-grid');
+                      el?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all shadow-[0_0_20px_rgba(250,30,78,0.3)]"
+                  >
+                    BROWSE GEAR
+                  </button>
+                  <button className="border border-gray-700 hover:border-white text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all">
+                    TRAILER
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <div id="market-grid" className="sticky top-0 z-40 bg-[#0b0b0d]/90 backdrop-blur-md border-b border-gray-800 py-4 px-8">
+              <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`text-xs font-orbitron uppercase tracking-widest whitespace-nowrap px-4 py-2 border border-transparent transition-all ${
+                      activeCategory === cat 
+                        ? 'text-[#fa1e4e] border-b-[#fa1e4e]' 
+                        : 'text-gray-500 hover:text-white'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <section className="container mx-auto px-8 py-12">
+              <div className="flex justify-between items-end mb-10">
+                <div>
+                  <h2 className="text-3xl font-orbitron font-bold mb-2">HOT <span className="text-[#fa1e4e]">DROPS</span></h2>
+                  <p className="text-gray-500">Live inventory of high-performance components</p>
+                </div>
+                <div className="hidden sm:flex items-center gap-4 text-xs font-orbitron text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-green-500" /> STABLE
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-[#fa1e4e]" /> LOW STOCK
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredProducts.map(p => (
+                  <ProductCard 
+                    key={p.id} 
+                    product={p} 
+                    onAddToCart={addToCart} 
+                    onToggleWishlist={toggleWishlist}
+                    isWishlisted={wishlist.includes(p.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          </>
+        );
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#0b0b0d] text-white">
       <Sidebar 
         onToggleCart={() => setIsCartOpen(!isCartOpen)} 
         onToggleChat={() => setIsChatOpen(!isChatOpen)}
         activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        setActiveSection={(s) => {
+          setActiveSection(s);
+          if (s !== 'search') setSearchTerm(''); // Clear search when leaving search section
+        }}
       />
 
       <main className="pl-14 transition-all duration-300">
-        {/* Header / Hero */}
-        <section className="relative h-[400px] overflow-hidden">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920" 
-              alt="Hero" 
-              className="w-full h-full object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0b0b0d] via-[#0b0b0d]/80 to-transparent" />
-          </div>
+        {renderContent()}
 
-          <div className="relative h-full container mx-auto px-8 flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-4 text-[#fa1e4e]">
-              <Zap size={20} fill="currentColor" />
-              <span className="font-orbitron tracking-widest text-sm uppercase">Limited Edition Series</span>
-            </div>
-            <h1 className="text-6xl md:text-8xl font-orbitron font-black leading-none mb-6">
-              BEYOND <br />
-              <span className="text-[#fa1e4e] gx-glow">LIMITS.</span>
-            </h1>
-            <p className="max-w-xl text-gray-400 text-lg mb-8">
-              Upgrade your setup with the world's most aggressive hardware. 
-              Powered by GX architecture for gamers who demand nothing less than perfection in Kenya.
-            </p>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setActiveSection('market')}
-                className="bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all shadow-[0_0_20px_rgba(250,30,78,0.3)]"
-              >
-                BROWSE GEAR
-              </button>
-              <button className="border border-gray-700 hover:border-white text-white font-orbitron font-bold py-3 px-8 rounded-sm transition-all">
-                TRAILER
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Categories Bar */}
-        <div className="sticky top-0 z-40 bg-[#0b0b0d]/90 backdrop-blur-md border-b border-gray-800 py-4 px-8">
-          <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`text-xs font-orbitron uppercase tracking-widest whitespace-nowrap px-4 py-2 border border-transparent transition-all ${
-                  activeCategory === cat 
-                    ? 'text-[#fa1e4e] border-b-[#fa1e4e]' 
-                    : 'text-gray-500 hover:text-white'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Market Section */}
-        <section className="container mx-auto px-8 py-12">
-          <div className="flex justify-between items-end mb-10">
-            <div>
-              <h2 className="text-3xl font-orbitron font-bold mb-2">HOT <span className="text-[#fa1e4e]">DROPS</span></h2>
-              <p className="text-gray-500">Live inventory of high-performance components</p>
-            </div>
-            <div className="hidden sm:flex items-center gap-4 text-xs font-orbitron text-gray-500">
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-green-500" /> STABLE
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-[#fa1e4e]" /> LOW STOCK
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map(p => (
-              <ProductCard key={p.id} product={p} onAddToCart={addToCart} />
-            ))}
-          </div>
-        </section>
-
-        {/* Features / Control Panels */}
+        {/* Generic App Features (Shown on all main pages) */}
         <section className="bg-[#111113] py-20 border-t border-gray-800">
           <div className="container mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="flex flex-col items-center text-center">
@@ -158,7 +287,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Footer */}
         <footer className="border-t border-gray-800 py-12 bg-[#0b0b0d]">
           <div className="container mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-3">
@@ -181,7 +309,6 @@ const App: React.FC = () => {
         </footer>
       </main>
 
-      {/* Cart Control Side Panel */}
       <div className={`fixed top-0 right-0 w-full sm:w-[400px] h-screen bg-[#0b0b0d] border-l border-gray-800 z-[60] flex flex-col transition-transform duration-500 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-[#1a1a1c]">
           <h2 className="text-white font-orbitron font-bold text-sm tracking-widest uppercase flex items-center gap-2">
@@ -236,7 +363,6 @@ const App: React.FC = () => {
         availableProducts={PRODUCTS} 
       />
 
-      {/* Backdrop */}
       {(isCartOpen || isChatOpen) && (
         <div 
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
