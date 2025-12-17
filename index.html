@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,31 +8,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0b0b0d;
+            --bg-secondary: #161618;
+            --bg-tertiary: #1a1a1c;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --border-color: #1f2937;
+            --accent-color: #fa1e4e;
+        }
+
+        html.light {
+            --bg-primary: #f3f4f6;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border-color: #d1d5db;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0b0b0d;
-            color: #ffffff;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+        
         .font-orbitron {
             font-family: 'Orbitron', sans-serif;
         }
+        
         ::-webkit-scrollbar {
             width: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #0b0b0d;
+            background: var(--bg-primary);
         }
         ::-webkit-scrollbar-thumb {
-            background: #fa1e4e;
+            background: var(--accent-color);
             border-radius: 10px;
         }
+        
         .gx-glow {
             text-shadow: 0 0 10px rgba(250, 30, 78, 0.5);
         }
+        
         .gx-border-glow {
             box-shadow: 0 0 15px rgba(250, 30, 78, 0.2);
         }
+
+        /* Utility classes for dynamic colors */
+        .theme-bg-primary { background-color: var(--bg-primary); }
+        .theme-bg-secondary { background-color: var(--bg-secondary); }
+        .theme-bg-tertiary { background-color: var(--bg-tertiary); }
+        .theme-text-primary { color: var(--text-primary); }
+        .theme-text-secondary { color: var(--text-secondary); }
+        .theme-border { border-color: var(--border-color); }
     </style>
 <script type="importmap">
 {
@@ -45,10 +77,8 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body>
     <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
