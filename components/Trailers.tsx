@@ -18,7 +18,7 @@ const TRAILERS: Trailer[] = [
     title: 'Titan-X Unleashed: OLED Revolution',
     thumbnail: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?auto=format&fit=crop&q=80&w=800',
     duration: '2:15',
-    date: 'May 2024',
+    date: 'May 2025',
     category: 'Hardware',
     description: 'Experience the world\'s fastest gaming laptop. 240Hz OLED meets liquid metal cooling.'
   },
@@ -27,7 +27,7 @@ const TRAILERS: Trailer[] = [
     title: 'GX-9000 Phantom Architecture',
     thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=800',
     duration: '1:45',
-    date: 'April 2024',
+    date: 'April 2025',
     category: 'GPU',
     description: 'A deep dive into the 24GB GDDR6X beast that powers the next generation of immersion.'
   },
@@ -36,7 +36,7 @@ const TRAILERS: Trailer[] = [
     title: 'Zero-G: The Speed of Light',
     thumbnail: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=800',
     duration: '1:10',
-    date: 'March 2024',
+    date: 'March 2025',
     category: 'Peripherals',
     description: '49 grams. 32K DPI. Wireless latency that feels like a wired connection.'
   },
@@ -45,7 +45,7 @@ const TRAILERS: Trailer[] = [
     title: 'NeonPulse Soundscapes',
     thumbnail: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800',
     duration: '3:20',
-    date: 'February 2024',
+    date: 'February 2025',
     category: 'Audio',
     description: 'Planar magnetic drivers meet spatial audio. Hear every footstep before it happens.'
   }
