@@ -6,6 +6,7 @@ import ProductCard from './components/ProductCard';
 import AIChat from './components/AIChat';
 import Profile from './components/Profile';
 import Trailers from './components/Trailers';
+import Settings from './components/Settings';
 import { Product, CartItem } from './types';
 import { PRODUCTS, CATEGORIES } from './constants';
 
@@ -27,7 +28,7 @@ const App: React.FC = () => {
     }
     
     // Category-based filtering
-    if (activeCategory !== 'All' && !['wishlist', 'profile', 'trailers'].includes(activeSection)) {
+    if (activeCategory !== 'All' && !['wishlist', 'profile', 'trailers', 'settings'].includes(activeSection)) {
       list = list.filter(p => p.category === activeCategory);
     }
 
@@ -72,6 +73,9 @@ const App: React.FC = () => {
         
       case 'trailers':
         return <Trailers />;
+
+      case 'settings':
+        return <Settings />;
         
       case 'search':
         return (
