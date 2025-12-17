@@ -4,8 +4,8 @@ import { User, Shield, Zap, Package, Award, Settings, LogOut } from 'lucide-reac
 
 const Profile: React.FC = () => {
   const mockOrders = [
-    { id: 'GX-9281', date: '2024-05-12', total: 410000, status: 'Delivered' },
-    { id: 'GX-8822', date: '2024-04-28', total: 15800, status: 'Processing' },
+    { id: 'GX-9281', date: '2025-05-12', total: 410000, status: 'Delivered' },
+    { id: 'GX-8822', date: '2025-04-28', total: 15800, status: 'Processing' },
   ];
 
   return (
