@@ -14,21 +14,21 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggleCart, onToggleChat, activeSec
     <button 
       onClick={onClick || (() => id && setActiveSection(id))}
       className={`group relative flex items-center justify-center w-12 h-12 transition-all duration-300 ${
-        activeSection === id ? 'text-[#fa1e4e]' : 'text-gray-400 hover:text-white'
+        activeSection === id ? 'text-[#fa1e4e]' : 'theme-text-secondary hover:theme-text-primary'
       }`}
     >
       <Icon size={22} className="relative z-10" />
       {activeSection === id && (
         <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-[#fa1e4e] rounded-r-full shadow-[0_0_10px_#fa1e4e]" />
       )}
-      <div className="absolute left-14 px-2 py-1 bg-[#1a1a1c] border border-gray-800 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+      <div className="absolute left-14 px-2 py-1 theme-bg-tertiary border theme-border rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg">
         {label}
       </div>
     </button>
   );
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-14 bg-[#0b0b0d] border-r border-gray-800 flex flex-col items-center py-6 z-50">
+    <aside className="fixed left-0 top-0 h-screen w-14 theme-bg-primary border-r theme-border flex flex-col items-center py-6 z-50">
       <div className="mb-10 cursor-pointer" onClick={() => setActiveSection('market')}>
         <div className="w-8 h-8 rounded bg-gradient-to-br from-[#fa1e4e] to-[#ff4e7e] flex items-center justify-center font-orbitron font-black text-white text-lg">
           G
