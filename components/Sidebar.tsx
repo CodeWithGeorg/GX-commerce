@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ShoppingCart, LayoutGrid, Heart, Search, MessageSquare, Settings, User } from 'lucide-react';
+import { ShoppingCart, LayoutGrid, Heart, Search, MessageSquare, Settings, User, Play } from 'lucide-react';
 
 interface SidebarProps {
   onToggleCart: () => void;
@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggleCart, onToggleChat, activeSec
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-14 bg-[#0b0b0d] border-r border-gray-800 flex flex-col items-center py-6 z-50">
-      <div className="mb-10 cursor-pointer" onClick={() => setActiveSection('hero')}>
+      <div className="mb-10 cursor-pointer" onClick={() => setActiveSection('market')}>
         <div className="w-8 h-8 rounded bg-gradient-to-br from-[#fa1e4e] to-[#ff4e7e] flex items-center justify-center font-orbitron font-black text-white text-lg">
           G
         </div>
@@ -38,6 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggleCart, onToggleChat, activeSec
       <div className="flex flex-col gap-4 flex-1">
         <NavItem icon={LayoutGrid} label="Market" id="market" />
         <NavItem icon={Search} label="Search" id="search" />
+        <NavItem icon={Play} label="Trailers" id="trailers" />
         <NavItem icon={Heart} label="Wishlist" id="wishlist" />
         <NavItem icon={MessageSquare} label="AI Specialist" onClick={onToggleChat} />
       </div>
