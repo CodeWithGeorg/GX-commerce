@@ -12,7 +12,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
   return (
-    <div className="group bg-[#161618] border border-gray-800 hover:border-[#fa1e4e] transition-all duration-300 overflow-hidden relative">
+    <div className="group theme-bg-secondary border theme-border hover:border-[#fa1e4e] transition-all duration-300 overflow-hidden relative shadow-md">
       <div className="relative aspect-video overflow-hidden">
         <img 
           src={product.image} 
@@ -20,14 +20,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-100"
         />
         
-        {/* Wishlist Button Overlay */}
         <button 
           onClick={(e) => {
             e.stopPropagation();
             onToggleWishlist(product.id);
           }}
           className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-10 ${
-            isWishlisted ? 'bg-[#fa1e4e] text-white' : 'bg-black/40 text-gray-400 hover:text-white'
+            isWishlisted ? 'bg-[#fa1e4e] text-white' : 'bg-black/40 text-gray-200 hover:text-white'
           }`}
         >
           <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
@@ -38,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
             New Gear
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#161618] via-transparent to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-secondary)] via-transparent to-transparent opacity-60" />
       </div>
 
       <div className="p-4 flex flex-col h-40">
@@ -50,26 +49,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
           </div>
         </div>
         
-        <h3 className="text-white font-bold group-hover:text-[#fa1e4e] transition-colors line-clamp-1 mb-2">
+        <h3 className="theme-text-primary font-bold group-hover:text-[#fa1e4e] transition-colors line-clamp-1 mb-2 font-orbitron text-sm">
           {product.name}
         </h3>
         
-        <p className="text-gray-400 text-xs line-clamp-2 mb-4 flex-1">
+        <p className="theme-text-secondary text-xs line-clamp-2 mb-4 flex-1">
           {product.description}
         </p>
 
         <div className="flex items-center justify-between mt-auto">
-          <span className="text-sm font-orbitron font-bold text-white">KSh {product.price.toLocaleString()}</span>
+          <span className="text-sm font-orbitron font-bold theme-text-primary">KSh {product.price.toLocaleString()}</span>
           <button 
             onClick={() => onAddToCart(product)}
-            className="w-10 h-10 bg-[#252528] group-hover:bg-[#fa1e4e] flex items-center justify-center transition-all duration-300 rounded-sm"
+            className="w-10 h-10 theme-bg-tertiary group-hover:bg-[#fa1e4e] group-hover:text-white flex items-center justify-center transition-all duration-300 rounded-sm"
           >
-            <Plus size={20} className="text-white" />
+            <Plus size={20} className="theme-text-primary group-hover:text-white" />
           </button>
         </div>
       </div>
       
-      {/* Corner RGB accent */}
       <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-l-[30px] border-t-transparent border-l-transparent group-hover:border-t-[#fa1e4e] transition-all duration-300 opacity-20" />
     </div>
   );
