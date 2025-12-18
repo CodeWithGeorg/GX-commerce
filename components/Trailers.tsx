@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Play, X, Info, Zap, Calendar, Box, Database, Cpu, Activity, ArrowLeft } from 'lucide-react';
 
 interface Trailer {
@@ -18,8 +17,8 @@ const TRAILERS: Trailer[] = [
   {
     id: 't1',
     title: 'Titan-X Unleashed: OLED Revolution',
-    thumbnail: 'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-high-tech-digital-data-processing-screen-34989-large.mp4',
+    thumbnail: 'https://img.youtube.com/vi/ShbKaX1lfvU/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/ShbKaX1lfvU',
     duration: '2:15',
     date: 'May 2025',
     category: 'Hardware',
@@ -29,8 +28,8 @@ const TRAILERS: Trailer[] = [
   {
     id: 't2',
     title: 'GX-9000 Phantom Architecture',
-    thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-circuit-board-details-and-components-close-up-34988-large.mp4',
+    thumbnail: 'https://img.youtube.com/vi/J5q3AlBfg2w/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/J5q3AlBfg2w',
     duration: '1:45',
     date: 'April 2025',
     category: 'GPU',
@@ -40,8 +39,8 @@ const TRAILERS: Trailer[] = [
   {
     id: 't3',
     title: 'Zero-G: The Speed of Light',
-    thumbnail: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-technological-glowing-particles-in-motion-34987-large.mp4',
+    thumbnail: 'https://img.youtube.com/vi/2HJ04kOljtc/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/2HJ04kOljtc',
     duration: '1:10',
     date: 'March 2025',
     category: 'Peripherals',
@@ -51,8 +50,8 @@ const TRAILERS: Trailer[] = [
   {
     id: 't4',
     title: 'NeonPulse Soundscapes',
-    thumbnail: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-close-up-of-electronic-circuit-board-34985-large.mp4',
+    thumbnail: 'https://img.youtube.com/vi/URSQGWlWehs/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/URSQGWlWehs',
     duration: '3:20',
     date: 'February 2025',
     category: 'Audio',
@@ -64,6 +63,8 @@ const TRAILERS: Trailer[] = [
 const Trailers: React.FC = () => {
   const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
   const [viewMode, setViewMode] = useState<'video' | 'specs'>('video');
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleOpenTrailer = (trailer: Trailer) => {
     setActiveTrailer(trailer);
@@ -85,14 +86,32 @@ const Trailers: React.FC = () => {
           <div 
             key={trailer.id}
             onClick={() => handleOpenTrailer(trailer)}
+            onMouseEnter={() => {
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              timeoutRef.current = setTimeout(() => setHoveredId(trailer.id), 300);
+            }}
+            onMouseLeave={() => {
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              setHoveredId(null);
+            }}
             className="group relative theme-bg-secondary border theme-border hover:border-[#fa1e4e] transition-all duration-500 overflow-hidden cursor-pointer shadow-lg"
           >
             <div className="aspect-video relative overflow-hidden">
-              <img 
-                src={trailer.thumbnail} 
-                alt={trailer.title} 
-                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-              />
+              {hoveredId === trailer.id ? (
+                <iframe
+                  src={`${trailer.videoUrl}?autoplay=1&mute=1&loop=1&playlist=${trailer.videoUrl.split('/').pop()}&controls=0&rel=0`}
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <img 
+                  src={trailer.thumbnail} 
+                  alt={trailer.title} 
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)] via-transparent to-transparent opacity-80" />
               
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -171,16 +190,13 @@ const Trailers: React.FC = () => {
               {viewMode === 'video' ? (
                 /* ACTUAL VIDEO PLAYER */
                 <div className="w-full h-full relative">
-                  <video 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline
-                    className="w-full h-full object-cover"
-                    key={activeTrailer.videoUrl}
-                  >
-                    <source src={activeTrailer.videoUrl} type="video/mp4" />
-                  </video>
+                  <iframe
+                    className="w-full h-full"
+                    src={`${activeTrailer.videoUrl}?autoplay=1&rel=0`}
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; encrypted-media"
+                    allowFullScreen
+                  />
                   
                   {/* Digital HUD Overlay */}
                   <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-12">
