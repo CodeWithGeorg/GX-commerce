@@ -8,6 +8,7 @@ import Profile from './components/Profile';
 import Trailers from './components/Trailers';
 import Settings from './components/Settings';
 import AuthModal from './components/AuthModal';
+import CheckoutModal from './components/CheckoutModal';
 import { Product, CartItem } from './types';
 import { PRODUCTS, CATEGORIES } from './constants';
 
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [accentColor, setAccentColor] = useState('#fa1e4e');
@@ -97,6 +99,12 @@ const App: React.FC = () => {
     setCart([]);
     setWishlist([]);
     setActiveSection('market');
+  };
+
+  const handleCheckoutSuccess = () => {
+    setCart([]);
+    setIsCartOpen(false);
+    setActiveSection('profile');
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -349,13 +357,26 @@ const App: React.FC = () => {
             <span className="theme-text-secondary font-orbitron text-sm uppercase">Grid Total</span>
             <span className="text-xl font-orbitron font-bold theme-text-primary">KSh {cartTotal.toLocaleString()}</span>
           </div>
-          <button className="w-full bg-accent hover:opacity-90 text-white font-orbitron font-bold py-4 rounded-sm flex items-center justify-center gap-2 shadow-accent">INITIATE CHECKOUT <ChevronRight size={18} /></button>
+          <button 
+            onClick={() => setIsCheckoutOpen(true)}
+            disabled={cart.length === 0}
+            className="w-full bg-accent hover:opacity-90 disabled:opacity-30 text-white font-orbitron font-bold py-4 rounded-sm flex items-center justify-center gap-2 shadow-accent"
+          >
+            INITIATE CHECKOUT <ChevronRight size={18} />
+          </button>
         </div>
       </div>
 
       <AIChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} availableProducts={PRODUCTS} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} onLogin={handleLogin} />
-      {(isCartOpen || isChatOpen || isAuthOpen) && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => {setIsCartOpen(false); setIsChatOpen(false); setIsAuthOpen(false);}} />}
+      <CheckoutModal 
+        isOpen={isCheckoutOpen} 
+        onClose={() => setIsCheckoutOpen(false)} 
+        cart={cart} 
+        total={cartTotal}
+        onSuccess={handleCheckoutSuccess}
+      />
+      {(isCartOpen || isChatOpen || isAuthOpen || isCheckoutOpen) && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => {setIsCartOpen(false); setIsChatOpen(false); setIsAuthOpen(false); setIsCheckoutOpen(false);}} />}
     </div>
   );
 };
