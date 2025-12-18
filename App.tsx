@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart } from 'lucide-react';
+import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart, Menu } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
 import AIChat from './components/AIChat';
@@ -80,7 +80,7 @@ const App: React.FC = () => {
       case 'settings': return <Settings isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode(!isDarkMode)} />;
       case 'search':
         return (
-          <section className="container mx-auto px-4 md:px-8 py-8 md:py-12 animate-in fade-in duration-500">
+          <section className="container mx-auto px-4 md:px-8 py-24 md:py-32 animate-in fade-in duration-500">
             <div className="mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-orbitron font-black mb-6 flex items-center gap-4 theme-text-primary">
                 <Search size={28} className="text-[#fa1e4e]" />
@@ -117,7 +117,7 @@ const App: React.FC = () => {
 
       case 'wishlist':
         return (
-          <section className="container mx-auto px-4 md:px-8 py-8 md:py-12 animate-in fade-in duration-500">
+          <section className="container mx-auto px-4 md:px-8 py-24 md:py-32 animate-in fade-in duration-500">
             <div className="mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-orbitron font-black mb-2 flex items-center gap-4 theme-text-primary">
                 <Heart size={28} className="text-[#fa1e4e]" />
@@ -144,13 +144,13 @@ const App: React.FC = () => {
       default: // 'market'
         return (
           <>
-            <section className="relative h-[500px] md:h-[400px] overflow-hidden">
+            <section className="relative h-[550px] md:h-[500px] overflow-hidden">
               <div className="absolute inset-0">
                 <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920" alt="Hero" className="w-full h-full object-cover opacity-30" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/80 to-transparent" />
               </div>
 
-              <div className="relative h-full container mx-auto px-4 md:px-8 flex flex-col justify-center pt-12 md:pt-0">
+              <div className="relative h-full container mx-auto px-4 md:px-8 flex flex-col justify-center pt-24 md:pt-32">
                 <div className="flex items-center gap-2 mb-4 text-[#fa1e4e]">
                   <Zap size={20} fill="currentColor" />
                   <span className="font-orbitron tracking-widest text-[10px] md:text-sm uppercase">Limited Edition Series</span>
@@ -209,7 +209,29 @@ const App: React.FC = () => {
         }}
       />
 
-      <main className="pl-0 md:pl-14 pb-20 md:pb-0">
+      <main className="pl-0 md:pl-14 pb-20 md:pb-0 relative">
+        {/* Updated Transparent Top Header with more padding and conditional visibility */}
+        <header className="absolute top-0 left-0 right-0 h-20 md:h-24 z-30 flex items-center justify-between pl-10 pr-6 md:pl-20 md:pr-12 pointer-events-none transition-all duration-500">
+          <div 
+            className={`flex items-center gap-2 pointer-events-auto cursor-pointer transition-all duration-500 ${activeSection !== 'market' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`} 
+            onClick={() => setActiveSection('market')}
+          >
+             <div className="md:hidden w-8 h-8 rounded bg-[#fa1e4e] flex items-center justify-center font-orbitron font-black text-white text-lg">G</div>
+             <span className="font-orbitron font-black text-sm md:text-lg tracking-tighter text-[#fa1e4e] md:theme-text-primary">GX <span className="hidden md:inline theme-text-primary">COMMERCE</span></span>
+          </div>
+          
+          <div className="flex items-center gap-6 pointer-events-auto">
+             <div className="hidden lg:flex items-center gap-8 text-[10px] font-orbitron tracking-[0.2em] uppercase theme-text-secondary">
+                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'market' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('market')}>Home</span>
+                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'search' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('search')}>Archive</span>
+                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'trailers' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('trailers')}>Media</span>
+             </div>
+             <div className="w-10 h-10 rounded-full border theme-border flex items-center justify-center theme-bg-primary/50 backdrop-blur-sm cursor-pointer hover:border-[#fa1e4e] transition-all group shadow-sm" onClick={() => setIsCartOpen(true)}>
+                <ShoppingBag size={18} className="theme-text-primary group-hover:text-[#fa1e4e] transition-colors" />
+             </div>
+          </div>
+        </header>
+
         {renderContent()}
 
         <section className="theme-bg-secondary py-16 md:py-20 border-t theme-border">
