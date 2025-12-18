@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, X, Info, Zap, Calendar, Box, Database, Cpu, Activity, ArrowLeft } from 'lucide-react';
 
@@ -64,7 +65,8 @@ const Trailers: React.FC = () => {
   const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
   const [viewMode, setViewMode] = useState<'video' | 'specs'>('video');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Fix: Used ReturnType<typeof setTimeout> instead of NodeJS.Timeout to resolve the namespace error in browser-based React environments
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleOpenTrailer = (trailer: Trailer) => {
     setActiveTrailer(trailer);
