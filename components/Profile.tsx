@@ -1,12 +1,45 @@
 
 import React from 'react';
-import { User, Shield, Zap, Package, Award, Settings, LogOut } from 'lucide-react';
+import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn } from 'lucide-react';
 
-const Profile: React.FC = () => {
+interface ProfileProps {
+  user: { name: string } | null;
+  onLogout: () => void;
+  onLoginClick: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
   const mockOrders = [
     { id: 'GX-9281', date: '2025-05-12', total: 410000, status: 'Delivered' },
     { id: 'GX-8822', date: '2025-04-28', total: 15800, status: 'Processing' },
   ];
+
+  if (!user) {
+    return (
+      <section className="container mx-auto px-8 py-24 md:py-32 flex items-center justify-center min-h-[70vh] animate-in fade-in duration-500">
+        <div className="max-w-md w-full theme-bg-secondary border theme-border p-12 text-center relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#fa1e4e]/20" />
+          <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#fa1e4e]/20" />
+          
+          <div className="w-20 h-20 bg-[#fa1e4e]/10 border border-[#fa1e4e]/30 rounded-full flex items-center justify-center mx-auto mb-8">
+            <Lock size={32} className="text-[#fa1e4e]" />
+          </div>
+          
+          <h2 className="text-3xl font-orbitron font-black theme-text-primary mb-4">ACCESS_DENIED</h2>
+          <p className="theme-text-secondary text-sm font-orbitron uppercase tracking-widest leading-relaxed mb-10">
+            Profile encryption is active. Please initialize session access to view mission logs and tech rewards.
+          </p>
+          
+          <button 
+            onClick={onLoginClick}
+            className="w-full bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 shadow-lg"
+          >
+            <LogIn size={20} /> INITIALIZE_UPLINK
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="container mx-auto px-8 py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -20,14 +53,14 @@ const Profile: React.FC = () => {
             </div>
             
             <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-32 h-32 rounded-full border-4 border-[#fa1e4e] p-1 mb-6 shadow-[0_0_20px_rgba(250,30,78,0.3)]">
+              <div className="w-32 h-32 rounded-full border-4 border-[#fa1e4e] p-1 mb-6 shadow-[0_0_20px_rgba(250,30,78,0.3)] overflow-hidden">
                 <img 
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=GXGamer" 
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} 
                   alt="Avatar" 
                   className="w-full h-full rounded-full theme-bg-primary"
                 />
               </div>
-              <h2 className="text-2xl font-orbitron font-black theme-text-primary mb-1">VANGUARD_01</h2>
+              <h2 className="text-2xl font-orbitron font-black theme-text-primary mb-1 uppercase">{user.name}</h2>
               <span className="text-[#fa1e4e] font-orbitron text-[10px] tracking-widest uppercase mb-6">Elite Tech Specialist</span>
               
               <div className="w-full theme-bg-primary h-2 rounded-full mb-2 overflow-hidden border theme-border">
@@ -94,14 +127,17 @@ const Profile: React.FC = () => {
             <div className="theme-bg-secondary border theme-border p-8 hover:border-[#fa1e4e] transition-all cursor-pointer group shadow-md">
               <div className="flex items-center gap-4 mb-4">
                 <Settings className="text-[#fa1e4e] group-hover:rotate-45 transition-transform" />
-                <h4 className="theme-text-primary font-orbitron font-bold">GRID SETTINGS</h4>
+                <h4 className="theme-text-primary font-orbitron font-bold uppercase text-sm">GRID SETTINGS</h4>
               </div>
               <p className="theme-text-secondary text-xs">Configure your hardware interface and security protocols.</p>
             </div>
-            <div className="theme-bg-secondary border theme-border p-8 hover:border-red-500 transition-all cursor-pointer group shadow-md">
+            <div 
+              onClick={onLogout}
+              className="theme-bg-secondary border theme-border p-8 hover:border-red-500 transition-all cursor-pointer group shadow-md"
+            >
               <div className="flex items-center gap-4 mb-4">
                 <LogOut className="text-red-500 group-hover:-translate-x-1 transition-transform" />
-                <h4 className="theme-text-primary font-orbitron font-bold">TERMINATE SESSION</h4>
+                <h4 className="theme-text-primary font-orbitron font-bold uppercase text-sm">TERMINATE SESSION</h4>
               </div>
               <p className="theme-text-secondary text-xs">Safely logout and clear local cache buffers.</p>
             </div>
