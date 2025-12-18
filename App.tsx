@@ -144,13 +144,13 @@ const App: React.FC = () => {
       default: // 'market'
         return (
           <>
-            <section className="relative h-[450px] md:h-[400px] overflow-hidden">
+            <section className="relative h-[500px] md:h-[400px] overflow-hidden">
               <div className="absolute inset-0">
                 <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920" alt="Hero" className="w-full h-full object-cover opacity-30" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/80 to-transparent" />
               </div>
 
-              <div className="relative h-full container mx-auto px-4 md:px-8 flex flex-col justify-center">
+              <div className="relative h-full container mx-auto px-4 md:px-8 flex flex-col justify-center pt-12 md:pt-0">
                 <div className="flex items-center gap-2 mb-4 text-[#fa1e4e]">
                   <Zap size={20} fill="currentColor" />
                   <span className="font-orbitron tracking-widest text-[10px] md:text-sm uppercase">Limited Edition Series</span>
