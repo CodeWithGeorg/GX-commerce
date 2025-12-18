@@ -7,6 +7,7 @@ import AIChat from './components/AIChat';
 import Profile from './components/Profile';
 import Trailers from './components/Trailers';
 import Settings from './components/Settings';
+import AuthModal from './components/AuthModal';
 import { Product, CartItem } from './types';
 import { PRODUCTS, CATEGORIES } from './constants';
 
@@ -17,8 +18,10 @@ const App: React.FC = () => {
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [user, setUser] = useState<{ name: string } | null>(null);
 
   // Sync theme with HTML class
   useEffect(() => {
@@ -53,6 +56,11 @@ const App: React.FC = () => {
   }, [activeSection, activeCategory, searchTerm, wishlist]);
 
   const addToCart = (product: Product) => {
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
+
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
@@ -64,6 +72,10 @@ const App: React.FC = () => {
   };
 
   const toggleWishlist = (id: string) => {
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
     setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
@@ -71,11 +83,22 @@ const App: React.FC = () => {
     setCart(prev => prev.filter(item => item.id !== id));
   };
 
+  const handleLogin = (username: string) => {
+    setUser({ name: username });
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setCart([]);
+    setWishlist([]);
+    setActiveSection('market');
+  };
+
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'profile': return <Profile />;
+      case 'profile': return <Profile user={user} onLogout={handleLogout} onLoginClick={() => setIsAuthOpen(true)} />;
       case 'trailers': return <Trailers />;
       case 'settings': return <Settings isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode(!isDarkMode)} />;
       case 'search':
@@ -207,10 +230,11 @@ const App: React.FC = () => {
           if (s !== 'search') setSearchTerm(''); 
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
+        isLoggedIn={!!user}
       />
 
       <main className="pl-0 md:pl-14 pb-20 md:pb-0 relative">
-        {/* Updated Transparent Top Header with more padding and conditional visibility */}
+        {/* Updated Transparent Top Header */}
         <header className="absolute top-0 left-0 right-0 h-20 md:h-24 z-30 flex items-center justify-between pl-10 pr-6 md:pl-20 md:pr-12 pointer-events-none transition-all duration-500">
           <div 
             className={`flex items-center gap-2 pointer-events-auto cursor-pointer transition-all duration-500 ${activeSection !== 'market' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`} 
@@ -226,8 +250,19 @@ const App: React.FC = () => {
                 <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'search' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('search')}>Archive</span>
                 <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'trailers' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('trailers')}>Media</span>
              </div>
-             <div className="w-10 h-10 rounded-full border theme-border flex items-center justify-center theme-bg-primary/50 backdrop-blur-sm cursor-pointer hover:border-[#fa1e4e] transition-all group shadow-sm" onClick={() => setIsCartOpen(true)}>
-                <ShoppingBag size={18} className="theme-text-primary group-hover:text-[#fa1e4e] transition-colors" />
+             
+             <div className="flex items-center gap-3">
+               {!user && (
+                 <button 
+                  onClick={() => setIsAuthOpen(true)}
+                  className="hidden md:block bg-[#fa1e4e]/10 border border-[#fa1e4e]/30 px-6 py-2 rounded-sm theme-text-primary font-orbitron text-[10px] uppercase tracking-widest hover:bg-[#fa1e4e] hover:text-white transition-all shadow-sm"
+                 >
+                   Initialize Access
+                 </button>
+               )}
+               <div className="w-10 h-10 rounded-full border theme-border flex items-center justify-center theme-bg-primary/50 backdrop-blur-sm cursor-pointer hover:border-[#fa1e4e] transition-all group shadow-sm" onClick={() => setIsCartOpen(true)}>
+                  <ShoppingBag size={18} className="theme-text-primary group-hover:text-[#fa1e4e] transition-colors" />
+               </div>
              </div>
           </div>
         </header>
@@ -305,7 +340,8 @@ const App: React.FC = () => {
       </div>
 
       <AIChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} availableProducts={PRODUCTS} />
-      {(isCartOpen || isChatOpen) && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => {setIsCartOpen(false); setIsChatOpen(false);}} />}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} onLogin={handleLogin} />
+      {(isCartOpen || isChatOpen || isAuthOpen) && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" onClick={() => {setIsCartOpen(false); setIsChatOpen(false); setIsAuthOpen(false);}} />}
     </div>
   );
 };
