@@ -16,6 +16,7 @@
             --text-secondary: #9ca3af;
             --border-color: #1f2937;
             --accent-color: #fa1e4e;
+            --glow-intensity: 0.8;
         }
 
         html.light {
@@ -51,11 +52,11 @@
         }
         
         .gx-glow {
-            text-shadow: 0 0 10px rgba(250, 30, 78, 0.5);
+            text-shadow: 0 0 calc(15px * var(--glow-intensity)) var(--accent-color);
         }
         
         .gx-border-glow {
-            box-shadow: 0 0 15px rgba(250, 30, 78, 0.2);
+            box-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent-color);
         }
 
         /* Utility classes for dynamic colors */
@@ -65,6 +66,12 @@
         .theme-text-primary { color: var(--text-primary); }
         .theme-text-secondary { color: var(--text-secondary); }
         .theme-border { border-color: var(--border-color); }
+
+        /* Direct color overrides for elements using the accent */
+        .text-accent { color: var(--accent-color) !important; }
+        .bg-accent { background-color: var(--accent-color) !important; }
+        .border-accent { border-color: var(--accent-color) !important; }
+        .shadow-accent { box-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent-color); }
     </style>
 <script type="importmap">
 {
