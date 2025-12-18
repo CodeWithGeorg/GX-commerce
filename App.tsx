@@ -21,16 +21,21 @@ const App: React.FC = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [accentColor, setAccentColor] = useState('#fa1e4e');
+  const [rgbIntensity, setRgbIntensity] = useState(0.8);
   const [user, setUser] = useState<{ name: string } | null>(null);
 
-  // Sync theme with HTML class
+  // Sync theme with HTML class and CSS variables
   useEffect(() => {
+    const root = document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.remove('light');
+      root.classList.remove('light');
     } else {
-      document.documentElement.classList.add('light');
+      root.classList.add('light');
     }
-  }, [isDarkMode]);
+    root.style.setProperty('--accent-color', accentColor);
+    root.style.setProperty('--glow-intensity', rgbIntensity.toString());
+  }, [isDarkMode, accentColor, rgbIntensity]);
 
   const filteredProducts = useMemo(() => {
     let list = PRODUCTS;
@@ -100,18 +105,27 @@ const App: React.FC = () => {
     switch (activeSection) {
       case 'profile': return <Profile user={user} onLogout={handleLogout} onLoginClick={() => setIsAuthOpen(true)} />;
       case 'trailers': return <Trailers />;
-      case 'settings': return <Settings isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode(!isDarkMode)} />;
+      case 'settings': return (
+        <Settings 
+          isDarkMode={isDarkMode} 
+          onToggleTheme={() => setIsDarkMode(!isDarkMode)} 
+          accentColor={accentColor}
+          onAccentColorChange={setAccentColor}
+          rgbIntensity={rgbIntensity}
+          onRgbIntensityChange={setRgbIntensity}
+        />
+      );
       case 'search':
         return (
           <section className="container mx-auto px-4 md:px-8 py-24 md:py-32 animate-in fade-in duration-500">
             <div className="mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-orbitron font-black mb-6 flex items-center gap-4 theme-text-primary">
-                <Search size={28} className="text-[#fa1e4e]" />
-                GLOBAL <span className="text-[#fa1e4e]">SEARCH</span>
+                <Search size={28} className="text-accent" />
+                GLOBAL <span className="text-accent">SEARCH</span>
               </h2>
               <div className="relative group w-full lg:max-w-2xl">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search size={20} className="text-gray-500 group-focus-within:text-[#fa1e4e] transition-colors" />
+                  <Search size={20} className="text-gray-500 group-focus-within:text-accent transition-colors" />
                 </div>
                 <input 
                   autoFocus
@@ -119,7 +133,7 @@ const App: React.FC = () => {
                   placeholder="Scan hardware database..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full theme-bg-secondary border theme-border focus:border-[#fa1e4e] outline-none theme-text-primary font-orbitron py-4 pl-12 pr-6 rounded-sm transition-all text-lg md:text-xl"
+                  className="w-full theme-bg-secondary border theme-border focus:border-accent outline-none theme-text-primary font-orbitron py-4 pl-12 pr-6 rounded-sm transition-all text-lg md:text-xl"
                 />
               </div>
             </div>
@@ -143,8 +157,8 @@ const App: React.FC = () => {
           <section className="container mx-auto px-4 md:px-8 py-24 md:py-32 animate-in fade-in duration-500">
             <div className="mb-8 md:mb-12">
               <h2 className="text-3xl md:text-4xl font-orbitron font-black mb-2 flex items-center gap-4 theme-text-primary">
-                <Heart size={28} className="text-[#fa1e4e]" />
-                SAVED <span className="text-[#fa1e4e]">TARGETS</span>
+                <Heart size={28} className="text-accent" />
+                SAVED <span className="text-accent">TARGETS</span>
               </h2>
               <p className="theme-text-secondary font-orbitron text-[10px] md:text-xs tracking-widest uppercase">Your curated high-performance list</p>
             </div>
@@ -158,7 +172,7 @@ const App: React.FC = () => {
             ) : (
               <div className="py-20 text-center border border-dashed theme-border rounded-lg">
                 <p className="theme-text-secondary font-orbitron text-lg">Wishlist protocol empty.</p>
-                <button onClick={() => setActiveSection('market')} className="mt-6 text-[#fa1e4e] font-orbitron text-sm underline hover:text-white transition-colors">Return to Market</button>
+                <button onClick={() => setActiveSection('market')} className="mt-6 text-accent font-orbitron text-sm underline hover:text-white transition-colors">Return to Market</button>
               </div>
             )}
           </section>
@@ -174,21 +188,21 @@ const App: React.FC = () => {
               </div>
 
               <div className="relative h-full container mx-auto px-4 md:px-8 flex flex-col justify-center pt-24 md:pt-32">
-                <div className="flex items-center gap-2 mb-4 text-[#fa1e4e]">
+                <div className="flex items-center gap-2 mb-4 text-accent">
                   <Zap size={20} fill="currentColor" />
                   <span className="font-orbitron tracking-widest text-[10px] md:text-sm uppercase">Limited Edition Series</span>
                 </div>
                 <h1 className="text-4xl sm:text-6xl md:text-8xl font-orbitron font-black leading-tight md:leading-none mb-6 theme-text-primary">
                   BEYOND <br className="hidden sm:block" />
-                  <span className="text-[#fa1e4e] gx-glow">LIMITS.</span>
+                  <span className="text-accent gx-glow">LIMITS.</span>
                 </h1>
                 <p className="max-w-xl theme-text-secondary text-sm md:text-lg mb-8 leading-relaxed">
                   Upgrade your setup with the world's most aggressive hardware. 
                   Powered by GX architecture for gamers who demand perfection.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button onClick={() => document.getElementById('market-grid')?.scrollIntoView({ behavior: 'smooth' })} className="bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-4 md:py-3 px-8 rounded-sm transition-all shadow-[0_0_20px_rgba(250,30,78,0.3)] w-full sm:w-auto">BROWSE GEAR</button>
-                  <button onClick={() => setActiveSection('trailers')} className="border theme-border hover:border-[#fa1e4e] theme-text-primary font-orbitron font-bold py-4 md:py-3 px-8 rounded-sm transition-all w-full sm:w-auto">TRAILER</button>
+                  <button onClick={() => document.getElementById('market-grid')?.scrollIntoView({ behavior: 'smooth' })} className="bg-accent hover:opacity-90 text-white font-orbitron font-bold py-4 md:py-3 px-8 rounded-sm transition-all shadow-accent w-full sm:w-auto">BROWSE GEAR</button>
+                  <button onClick={() => setActiveSection('trailers')} className="border theme-border hover:border-accent theme-text-primary font-orbitron font-bold py-4 md:py-3 px-8 rounded-sm transition-all w-full sm:w-auto">TRAILER</button>
                 </div>
               </div>
             </section>
@@ -196,7 +210,7 @@ const App: React.FC = () => {
             <div id="market-grid" className="sticky top-0 z-40 theme-bg-primary/90 backdrop-blur-md border-b theme-border py-4 px-4 md:px-8">
               <div className="flex items-center gap-4 md:gap-6 overflow-x-auto no-scrollbar scroll-smooth">
                 {CATEGORIES.map(cat => (
-                  <button key={cat} onClick={() => setActiveCategory(cat)} className={`text-[10px] md:text-xs font-orbitron uppercase tracking-widest whitespace-nowrap px-4 py-2 border border-transparent transition-all ${activeCategory === cat ? 'text-[#fa1e4e] border-b-[#fa1e4e]' : 'theme-text-secondary hover:theme-text-primary'}`}>{cat}</button>
+                  <button key={cat} onClick={() => setActiveCategory(cat)} className={`text-[10px] md:text-xs font-orbitron uppercase tracking-widest whitespace-nowrap px-4 py-2 border border-transparent transition-all ${activeCategory === cat ? 'text-accent border-b-accent' : 'theme-text-secondary hover:theme-text-primary'}`}>{cat}</button>
                 ))}
               </div>
             </div>
@@ -204,7 +218,7 @@ const App: React.FC = () => {
             <section className="container mx-auto px-4 md:px-8 py-8 md:py-12">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-10 gap-4">
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-orbitron font-bold mb-2 theme-text-primary">HOT <span className="text-[#fa1e4e]">DROPS</span></h2>
+                  <h2 className="text-2xl md:text-3xl font-orbitron font-bold mb-2 theme-text-primary">HOT <span className="text-accent">DROPS</span></h2>
                   <p className="theme-text-secondary text-sm">Live inventory of high-performance components</p>
                 </div>
               </div>
@@ -240,28 +254,28 @@ const App: React.FC = () => {
             className={`flex items-center gap-2 pointer-events-auto cursor-pointer transition-all duration-500 ${activeSection !== 'market' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`} 
             onClick={() => setActiveSection('market')}
           >
-             <div className="md:hidden w-8 h-8 rounded bg-[#fa1e4e] flex items-center justify-center font-orbitron font-black text-white text-lg">G</div>
-             <span className="font-orbitron font-black text-sm md:text-lg tracking-tighter text-[#fa1e4e] md:theme-text-primary">GX <span className="hidden md:inline theme-text-primary">COMMERCE</span></span>
+             <div className="md:hidden w-8 h-8 rounded bg-accent flex items-center justify-center font-orbitron font-black text-white text-lg">G</div>
+             <span className="font-orbitron font-black text-sm md:text-lg tracking-tighter text-accent md:theme-text-primary">GX <span className="hidden md:inline theme-text-primary">COMMERCE</span></span>
           </div>
           
           <div className="flex items-center gap-6 pointer-events-auto">
              <div className="hidden lg:flex items-center gap-8 text-[10px] font-orbitron tracking-[0.2em] uppercase theme-text-secondary">
-                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'market' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('market')}>Home</span>
-                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'search' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('search')}>Archive</span>
-                <span className={`hover:text-[#fa1e4e] cursor-pointer transition-colors ${activeSection === 'trailers' ? 'text-[#fa1e4e]' : ''}`} onClick={() => setActiveSection('trailers')}>Media</span>
+                <span className={`hover:text-accent cursor-pointer transition-colors ${activeSection === 'market' ? 'text-accent' : ''}`} onClick={() => setActiveSection('market')}>Home</span>
+                <span className={`hover:text-accent cursor-pointer transition-colors ${activeSection === 'search' ? 'text-accent' : ''}`} onClick={() => setActiveSection('search')}>Archive</span>
+                <span className={`hover:text-accent cursor-pointer transition-colors ${activeSection === 'trailers' ? 'text-accent' : ''}`} onClick={() => setActiveSection('trailers')}>Media</span>
              </div>
              
              <div className="flex items-center gap-3">
                {!user && (
                  <button 
                   onClick={() => setIsAuthOpen(true)}
-                  className="hidden md:block bg-[#fa1e4e]/10 border border-[#fa1e4e]/30 px-6 py-2 rounded-sm theme-text-primary font-orbitron text-[10px] uppercase tracking-widest hover:bg-[#fa1e4e] hover:text-white transition-all shadow-sm"
+                  className="hidden md:block bg-accent/10 border border-accent/30 px-6 py-2 rounded-sm theme-text-primary font-orbitron text-[10px] uppercase tracking-widest hover:bg-accent hover:text-white transition-all shadow-sm"
                  >
                    Initialize Access
                  </button>
                )}
-               <div className="w-10 h-10 rounded-full border theme-border flex items-center justify-center theme-bg-primary/50 backdrop-blur-sm cursor-pointer hover:border-[#fa1e4e] transition-all group shadow-sm" onClick={() => setIsCartOpen(true)}>
-                  <ShoppingBag size={18} className="theme-text-primary group-hover:text-[#fa1e4e] transition-colors" />
+               <div className="w-10 h-10 rounded-full border theme-border flex items-center justify-center theme-bg-primary/50 backdrop-blur-sm cursor-pointer hover:border-accent transition-all group shadow-sm" onClick={() => setIsCartOpen(true)}>
+                  <ShoppingBag size={18} className="theme-text-primary group-hover:text-accent transition-colors" />
                </div>
              </div>
           </div>
@@ -277,8 +291,8 @@ const App: React.FC = () => {
               { icon: ShoppingBag, title: 'FAST SHIP GRID', text: 'Next-day delivery across Kenyan major cities. Real-time satellite tracking for every package.' }
             ].map((f, i) => (
               <div key={i} className="flex flex-col items-center text-center p-4">
-                <div className="w-14 h-14 md:w-16 md:h-16 bg-[#fa1e4e]/10 border border-[#fa1e4e]/30 rounded-full flex items-center justify-center mb-6">
-                  <f.icon className="text-[#fa1e4e]" size={28} />
+                <div className="w-14 h-14 md:w-16 md:h-16 bg-accent/10 border border-accent/30 rounded-full flex items-center justify-center mb-6">
+                  <f.icon className="text-accent" size={28} />
                 </div>
                 <h3 className="text-lg md:text-xl font-orbitron font-bold mb-4 theme-text-primary">{f.title}</h3>
                 <p className="theme-text-secondary text-sm leading-relaxed max-w-xs">{f.text}</p>
@@ -290,7 +304,7 @@ const App: React.FC = () => {
         <footer className="border-t theme-border py-12 theme-bg-primary">
           <div className="container mx-auto px-4 md:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded bg-[#fa1e4e] flex items-center justify-center font-orbitron font-black text-white text-xl">G</div>
+              <div className="w-10 h-10 rounded bg-accent flex items-center justify-center font-orbitron font-black text-white text-xl">G</div>
               <div>
                 <span className="font-orbitron font-bold theme-text-primary block text-sm">GX COMMERCE</span>
                 <span className="text-[10px] theme-text-secondary tracking-widest uppercase">The Gear of Tomorrow</span>
@@ -305,7 +319,7 @@ const App: React.FC = () => {
       <div className={`fixed top-0 right-0 w-full sm:w-[400px] h-screen theme-bg-primary border-l theme-border z-[60] flex flex-col transition-transform duration-500 ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-4 border-b theme-border flex justify-between items-center theme-bg-tertiary">
           <h2 className="theme-text-primary font-orbitron font-bold text-sm tracking-widest uppercase flex items-center gap-2">
-            <ShoppingBag size={18} className="text-[#fa1e4e]" /> Cart Control
+            <ShoppingBag size={18} className="text-accent" /> Cart Control
           </h2>
           <button onClick={() => setIsCartOpen(false)} className="theme-text-secondary hover:theme-text-primary"><X size={20} /></button>
         </div>
@@ -322,9 +336,9 @@ const App: React.FC = () => {
                 <img src={item.image} className="w-16 h-16 object-cover rounded" />
                 <div className="flex-1 min-w-0">
                   <h4 className="theme-text-primary text-xs font-bold truncate">{item.name}</h4>
-                  <p className="text-[#fa1e4e] text-sm font-orbitron mt-1">KSh {item.price.toLocaleString()}</p>
+                  <p className="text-accent text-sm font-orbitron mt-1">KSh {item.price.toLocaleString()}</p>
                 </div>
-                <button onClick={() => removeFromCart(item.id)} className="theme-text-secondary hover:text-[#fa1e4e] self-center"><Trash2 size={16} /></button>
+                <button onClick={() => removeFromCart(item.id)} className="theme-text-secondary hover:text-accent self-center"><Trash2 size={16} /></button>
               </div>
             ))
           )}
@@ -335,7 +349,7 @@ const App: React.FC = () => {
             <span className="theme-text-secondary font-orbitron text-sm uppercase">Grid Total</span>
             <span className="text-xl font-orbitron font-bold theme-text-primary">KSh {cartTotal.toLocaleString()}</span>
           </div>
-          <button className="w-full bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-4 rounded-sm flex items-center justify-center gap-2">INITIATE CHECKOUT <ChevronRight size={18} /></button>
+          <button className="w-full bg-accent hover:opacity-90 text-white font-orbitron font-bold py-4 rounded-sm flex items-center justify-center gap-2 shadow-accent">INITIATE CHECKOUT <ChevronRight size={18} /></button>
         </div>
       </div>
 
