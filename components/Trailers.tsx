@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, X, Info, Zap, Calendar, Box, Database, Cpu, Activity, ArrowLeft } from 'lucide-react';
 
@@ -58,6 +57,39 @@ const TRAILERS: Trailer[] = [
     category: 'Audio',
     description: 'Planar magnetic drivers meet spatial audio. Hear every footstep before it happens.',
     technicalSpecs: ['Drivers: 100mm Planar', 'Spatial: THX 7.1', 'Frequency: 5Hz - 50kHz', 'Weight: 320g']
+  },
+  {
+    id: 't5',
+    title: 'AORUS MASTER Series: Own the Game',
+    thumbnail: 'https://img.youtube.com/vi/0jhCLIiAH-Q/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/0jhCLIiAH-Q',
+    duration: '1:00',
+    date: 'January 2025',
+    category: 'Hardware',
+    description: 'Featuring stunning 18-inch mini-LED and 16-inch OLED displays, powered by an Intel Core Ultra 9 processor and NVIDIA GeForce RTX 5090 Laptop GPU.',
+    technicalSpecs: ['CPU: Intel Core Ultra 9', 'GPU: RTX 5090 Laptop', 'Display: 18" mini-LED / 16" OLED', 'Cooling: WINDFORCE INFINITY EX 270W']
+  },
+  {
+    id: 't6',
+    title: 'Battlemage GPU: Deep Dive',
+    thumbnail: 'https://img.youtube.com/vi/ACOlBthEFUw/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/ACOlBthEFUw',
+    duration: '30:00',
+    date: 'December 2024',
+    category: 'GPU',
+    description: 'Intel\'s Tom Petersen discusses the Battlemage GPU architecture and B580 performance, focusing on a single frame in Fortnite at 1440p.',
+    technicalSpecs: ['Architecture: Battlemage', 'Improvements: Execute Indirect, UAV Write Cache', 'Performance: 1440p gaming']
+  },
+  {
+    id: 't7',
+    title: 'DeathAdder V4 Pro: Ultra-Light Precision',
+    thumbnail: 'https://img.youtube.com/vi/Tbf0zdg58c4/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/embed/Tbf0zdg58c4',
+    duration: '1:30',
+    date: 'July 2025',
+    category: 'Peripherals',
+    description: 'Ultra-lightweight wireless ergonomic esports mouse outclasses the competition. It marks the biggest leap in mouse technology in over a decade.',
+    technicalSpecs: ['Weight: 56g', 'Sensor: Optical', 'Switches: Optical', 'Connectivity: HyperSpeed Wireless Gen-2']
   }
 ];
 
@@ -65,8 +97,7 @@ const Trailers: React.FC = () => {
   const [activeTrailer, setActiveTrailer] = useState<Trailer | null>(null);
   const [viewMode, setViewMode] = useState<'video' | 'specs'>('video');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  // Fix: Used ReturnType<typeof setTimeout> instead of NodeJS.Timeout to resolve the namespace error in browser-based React environments
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleOpenTrailer = (trailer: Trailer) => {
     setActiveTrailer(trailer);
