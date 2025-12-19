@@ -1,28 +1,87 @@
 
-import React from 'react';
-import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn, ChevronRight, X, Gift, Sparkles, Cpu } from 'lucide-react';
 
 interface ProfileProps {
   user: { name: string } | null;
   onLogout: () => void;
   onLoginClick: () => void;
+  onNavigateToSettings: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
+interface Reward {
+  id: string;
+  name: string;
+  cost: number;
+  type: 'Digital' | 'Hardware';
+  description: string;
+  image: string;
+}
+
+const REWARDS: Reward[] = [
+  {
+    id: 'r1',
+    name: 'Founder Series Skin',
+    cost: 5000,
+    type: 'Digital',
+    description: 'Exclusive metallic red skin for your GX interface.',
+    image: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=200'
+  },
+  {
+    id: 'r2',
+    name: 'GX Neon Keycap Set',
+    cost: 12000,
+    type: 'Hardware',
+    description: 'Custom PBT keycaps with translucent legends for max RGB.',
+    image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&q=80&w=200'
+  },
+  {
+    id: 'r3',
+    name: 'Tactical Desk Mat',
+    cost: 8000,
+    type: 'Hardware',
+    description: 'Military-grade cordura surface for pixel-perfect tracking.',
+    image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=200'
+  },
+  {
+    id: 'r4',
+    name: 'Elite Profile Badge',
+    cost: 2000,
+    type: 'Digital',
+    description: 'Animated "Vanguard" badge next to your alias.',
+    image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=200'
+  }
+];
+
+const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavigateToSettings }) => {
+  const [xpBalance, setXpBalance] = useState(12450);
+  const [isRewardsOpen, setIsRewardsOpen] = useState(false);
+  const [redeemedIds, setRedeemedIds] = useState<string[]>([]);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
   const mockOrders = [
     { id: 'GX-9281', date: '2025-05-12', total: 410000, status: 'Delivered' },
     { id: 'GX-8822', date: '2025-04-28', total: 15800, status: 'Processing' },
   ];
 
+  const handleRedeem = (reward: Reward) => {
+    if (xpBalance >= reward.cost && !redeemedIds.includes(reward.id)) {
+      setXpBalance(prev => prev - reward.cost);
+      setRedeemedIds(prev => [...prev, reward.id]);
+      setSuccessMsg(`REDEEMED: ${reward.name.toUpperCase()}`);
+      setTimeout(() => setSuccessMsg(null), 3000);
+    }
+  };
+
   if (!user) {
     return (
       <section className="container mx-auto px-8 py-24 md:py-32 flex items-center justify-center min-h-[70vh] animate-in fade-in duration-500">
         <div className="max-w-md w-full theme-bg-secondary border theme-border p-12 text-center relative overflow-hidden shadow-2xl">
-          <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-[#fa1e4e]/20" />
-          <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-[#fa1e4e]/20" />
+          <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-accent/20" />
+          <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-accent/20" />
           
-          <div className="w-20 h-20 bg-[#fa1e4e]/10 border border-[#fa1e4e]/30 rounded-full flex items-center justify-center mx-auto mb-8">
-            <Lock size={32} className="text-[#fa1e4e]" />
+          <div className="w-20 h-20 bg-accent/10 border border-accent/30 rounded-full flex items-center justify-center mx-auto mb-8">
+            <Lock size={32} className="text-accent" />
           </div>
           
           <h2 className="text-3xl font-orbitron font-black theme-text-primary mb-4">ACCESS_DENIED</h2>
@@ -32,7 +91,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
           
           <button 
             onClick={onLoginClick}
-            className="w-full bg-[#fa1e4e] hover:bg-[#ff4e7e] text-white font-orbitron font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 shadow-lg"
+            className="w-full bg-accent hover:opacity-90 text-white font-orbitron font-bold py-4 rounded-sm transition-all flex items-center justify-center gap-3 shadow-lg"
           >
             <LogIn size={20} /> INITIALIZE_UPLINK
           </button>
@@ -49,11 +108,11 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
         <div className="lg:col-span-1 space-y-8">
           <div className="theme-bg-secondary border theme-border p-8 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Shield size={120} className="text-[#fa1e4e]" />
+              <Shield size={120} className="text-accent" />
             </div>
             
             <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-32 h-32 rounded-full border-4 border-[#fa1e4e] p-1 mb-6 shadow-[0_0_20px_rgba(250,30,78,0.3)] overflow-hidden">
+              <div className="w-32 h-32 rounded-full border-4 border-accent p-1 mb-6 shadow-accent overflow-hidden">
                 <img 
                   src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} 
                   alt="Avatar" 
@@ -61,10 +120,10 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
                 />
               </div>
               <h2 className="text-2xl font-orbitron font-black theme-text-primary mb-1 uppercase">{user.name}</h2>
-              <span className="text-[#fa1e4e] font-orbitron text-[10px] tracking-widest uppercase mb-6">Elite Tech Specialist</span>
+              <span className="text-accent font-orbitron text-[10px] tracking-widest uppercase mb-6">Elite Tech Specialist</span>
               
               <div className="w-full theme-bg-primary h-2 rounded-full mb-2 overflow-hidden border theme-border">
-                <div className="bg-[#fa1e4e] h-full w-[75%] shadow-[0_0_10px_#fa1e4e]" />
+                <div className="bg-accent h-full w-[75%] shadow-accent" />
               </div>
               <div className="flex justify-between w-full text-[10px] font-orbitron theme-text-secondary uppercase">
                 <span>Level 42</span>
@@ -73,18 +132,29 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
             </div>
           </div>
 
-          <div className="theme-bg-secondary border theme-border p-6 shadow-md">
+          <div className="theme-bg-secondary border theme-border p-6 shadow-md relative overflow-hidden">
+            {successMsg && (
+              <div className="absolute inset-0 bg-green-500/90 flex items-center justify-center z-20 animate-in fade-in zoom-in-95 duration-300">
+                <div className="text-white font-orbitron font-black text-center p-4">
+                  <Sparkles className="mx-auto mb-2" />
+                  {successMsg}
+                </div>
+              </div>
+            )}
             <h3 className="theme-text-primary font-orbitron font-bold text-sm mb-6 flex items-center gap-2">
-              <Award size={18} className="text-[#fa1e4e]" />
+              <Award size={18} className="text-accent" />
               GX REWARDS
             </h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center theme-bg-primary p-4 rounded-sm border theme-border">
                 <span className="theme-text-secondary text-xs font-orbitron">TOTAL CREDITS</span>
-                <span className="theme-text-primary font-orbitron font-bold">12,450 XP</span>
+                <span className="theme-text-primary font-orbitron font-bold">{xpBalance.toLocaleString()} XP</span>
               </div>
-              <button className="w-full py-3 theme-bg-tertiary hover:bg-[#fa1e4e] hover:text-white theme-text-primary text-xs font-orbitron font-bold transition-all rounded-sm border theme-border">
-                REDEEM GEAR
+              <button 
+                onClick={() => setIsRewardsOpen(true)}
+                className="w-full py-3 bg-accent hover:opacity-90 text-white text-xs font-orbitron font-bold transition-all rounded-sm shadow-accent flex items-center justify-center gap-2"
+              >
+                <Zap size={14} /> REDEEM GEAR
               </button>
             </div>
           </div>
@@ -94,16 +164,16 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
         <div className="lg:col-span-2 space-y-8">
           <div className="theme-bg-secondary border theme-border p-8 shadow-lg">
             <h3 className="text-xl font-orbitron font-black theme-text-primary mb-8 flex items-center gap-3">
-              <Package size={24} className="text-[#fa1e4e]" />
+              <Package size={24} className="text-accent" />
               MISSION LOG <span className="theme-text-secondary">/ ORDERS</span>
             </h3>
             
             <div className="space-y-4">
               {mockOrders.map(order => (
-                <div key={order.id} className="flex items-center justify-between p-6 theme-bg-primary border theme-border hover:border-[#fa1e4e]/50 transition-colors group">
+                <div key={order.id} className="flex items-center justify-between p-6 theme-bg-primary border theme-border hover:border-accent/50 transition-colors group">
                   <div className="flex gap-6 items-center">
-                    <div className="w-12 h-12 theme-bg-tertiary flex items-center justify-center border theme-border group-hover:border-[#fa1e4e] transition-colors">
-                      <Zap size={20} className="theme-text-secondary group-hover:text-[#fa1e4e]" />
+                    <div className="w-12 h-12 theme-bg-tertiary flex items-center justify-center border theme-border group-hover:border-accent transition-colors">
+                      <Zap size={20} className="theme-text-secondary group-hover:text-accent" />
                     </div>
                     <div>
                       <p className="theme-text-primary font-orbitron font-bold text-sm">{order.id}</p>
@@ -124,9 +194,12 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="theme-bg-secondary border theme-border p-8 hover:border-[#fa1e4e] transition-all cursor-pointer group shadow-md">
+            <div 
+              onClick={onNavigateToSettings}
+              className="theme-bg-secondary border theme-border p-8 hover:border-accent transition-all cursor-pointer group shadow-md"
+            >
               <div className="flex items-center gap-4 mb-4">
-                <Settings className="text-[#fa1e4e] group-hover:rotate-45 transition-transform" />
+                <Settings className="text-accent group-hover:rotate-45 transition-transform" />
                 <h4 className="theme-text-primary font-orbitron font-bold uppercase text-sm">GRID SETTINGS</h4>
               </div>
               <p className="theme-text-secondary text-xs">Configure your hardware interface and security protocols.</p>
@@ -145,6 +218,83 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick }) => {
         </div>
 
       </div>
+
+      {/* Rewards Redemption Modal */}
+      {isRewardsOpen && (
+        <div className="fixed inset-0 z-[160] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsRewardsOpen(false)} />
+          <div className="relative w-full max-w-4xl theme-bg-secondary border theme-border shadow-accent animate-in zoom-in-95 duration-300 overflow-hidden">
+            {/* HUD Elements */}
+            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-accent/30 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-accent/30 pointer-events-none" />
+
+            <div className="p-8">
+              <div className="flex justify-between items-center mb-8 border-b theme-border pb-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-accent/10 border border-accent/30 flex items-center justify-center rounded-sm">
+                    <Gift size={24} className="text-accent" />
+                  </div>
+                  <div>
+                    <h2 className="theme-text-primary font-orbitron font-black text-2xl tracking-tighter uppercase">REWARD_HUB</h2>
+                    <p className="text-accent font-orbitron text-[10px] uppercase tracking-widest">Available Balance: {xpBalance.toLocaleString()} XP</p>
+                  </div>
+                </div>
+                <button onClick={() => setIsRewardsOpen(false)} className="theme-text-secondary hover:theme-text-primary transition-colors">
+                  <X size={28} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
+                {REWARDS.map(reward => {
+                  const isRedeemed = redeemedIds.includes(reward.id);
+                  const canAfford = xpBalance >= reward.cost;
+
+                  return (
+                    <div 
+                      key={reward.id} 
+                      className={`theme-bg-primary border theme-border p-4 flex gap-4 group transition-all ${
+                        isRedeemed ? 'opacity-50 grayscale' : 'hover:border-accent'
+                      }`}
+                    >
+                      <div className="w-24 h-24 shrink-0 overflow-hidden border theme-border relative">
+                        <img src={reward.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={reward.name} />
+                        <div className="absolute top-1 left-1 bg-black/60 px-1 text-[8px] font-orbitron text-accent uppercase border border-accent/30">
+                          {reward.type}
+                        </div>
+                      </div>
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className="theme-text-primary font-orbitron font-bold text-sm uppercase">{reward.name}</h4>
+                          <span className="text-accent font-orbitron font-black text-xs">{reward.cost.toLocaleString()}</span>
+                        </div>
+                        <p className="theme-text-secondary text-[10px] leading-tight mb-4">{reward.description}</p>
+                        <button 
+                          disabled={isRedeemed || !canAfford}
+                          onClick={() => handleRedeem(reward)}
+                          className={`mt-auto w-full py-2 font-orbitron text-[10px] uppercase font-bold transition-all border ${
+                            isRedeemed 
+                              ? 'border-gray-600 text-gray-500 cursor-not-allowed' 
+                              : canAfford 
+                                ? 'bg-accent border-accent text-white hover:bg-transparent hover:text-accent shadow-accent' 
+                                : 'border-red-500/30 text-red-500/50 cursor-not-allowed'
+                          }`}
+                        >
+                          {isRedeemed ? 'COLLECTED' : canAfford ? 'CLAIM REWARD' : 'INSUFFICIENT XP'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-8 pt-6 border-t theme-border flex items-center justify-between text-[10px] font-orbitron uppercase text-accent tracking-[0.2em] animate-pulse">
+                <span><Cpu size={12} className="inline mr-2" /> Syncing rewards grid...</span>
+                <span className="theme-text-secondary opacity-50">Hardware rewards ship to your primary uplink address.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
