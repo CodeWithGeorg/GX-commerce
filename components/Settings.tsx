@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, Shield, Info, Palette, Eye, Lock, Globe, Cpu, Moon, Sun } from 'lucide-react';
+import { Settings as SettingsIcon, Shield, Info, Palette, Eye, Lock, Globe, Cpu, Moon, Sun, Activity, Zap } from 'lucide-react';
 
 interface SettingsProps {
   isDarkMode: boolean;
@@ -53,9 +53,9 @@ const Settings: React.FC<SettingsProps> = ({
         <p className="theme-text-secondary font-orbitron text-[10px] md:text-xs tracking-widest uppercase">Manage hardware interface and legal protocols</p>
       </div>
 
-      <div className="theme-bg-secondary border theme-border flex flex-col min-h-[500px] md:min-h-[600px] shadow-xl overflow-hidden">
+      <div className="theme-bg-secondary border theme-border flex flex-col min-h-[500px] md:min-h-[600px] shadow-xl overflow-hidden relative">
         {/* Settings Navigation */}
-        <div className="flex border-b theme-border overflow-x-auto no-scrollbar scroll-smooth">
+        <div className="flex border-b theme-border overflow-x-auto no-scrollbar scroll-smooth bg-black/20">
           <TabButton id="appearance" icon={Palette} label="Appearance" />
           <TabButton id="privacy" icon={Shield} label="Privacy Policy" />
           <TabButton id="about" icon={Info} label="About" />
@@ -64,98 +64,139 @@ const Settings: React.FC<SettingsProps> = ({
         {/* Settings Content */}
         <div className="p-4 md:p-8 flex-1">
           {activeTab === 'appearance' && (
-            <div className="space-y-8 md:space-y-10 animate-in fade-in duration-500">
-              <div>
-                <h3 className="theme-text-primary font-orbitron font-bold mb-6 flex items-center gap-2 text-sm md:text-base">
-                  <Eye size={18} className="text-accent" />
-                  VISUAL INTERFACE
-                </h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-                  <div className="theme-bg-primary p-5 md:p-6 border theme-border rounded-sm">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="flex items-center gap-3">
-                        {isDarkMode ? <Moon size={18} className="text-accent" /> : <Sun size={18} className="text-orange-400" />}
-                        <span className="theme-text-primary text-xs md:text-sm font-orbitron uppercase tracking-widest">
-                          {isDarkMode ? 'Dark Mode' : 'Light Mode'}
-                        </span>
+            <div className="space-y-8 md:space-y-12 animate-in fade-in duration-500">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                {/* Visual Controls */}
+                <div className="lg:col-span-7 space-y-10">
+                  <div>
+                    <h3 className="theme-text-primary font-orbitron font-bold mb-6 flex items-center gap-2 text-sm md:text-base">
+                      <Eye size={18} className="text-accent" />
+                      RGB_CALIBRATION
+                    </h3>
+                    
+                    <div className="space-y-8">
+                      <div className="theme-bg-primary p-6 border theme-border rounded-sm relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-2 opacity-5">
+                          <Activity size={100} className="text-accent" />
+                        </div>
+                        <div className="flex justify-between items-center mb-6">
+                          <div className="flex items-center gap-3">
+                            <Zap size={18} className="text-accent gx-pulse" />
+                            <span className="theme-text-primary text-xs font-orbitron uppercase tracking-widest">
+                              PHOTON_INTENSITY
+                            </span>
+                          </div>
+                          <span className="text-accent font-orbitron font-black text-sm">{Math.round(rgbIntensity * 100)}%</span>
+                        </div>
+                        
+                        <div className="relative h-8 flex items-center">
+                          <input 
+                            type="range" 
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={rgbIntensity}
+                            onChange={(e) => onRgbIntensityChange(parseFloat(e.target.value))}
+                            className="w-full h-1 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-accent" 
+                          />
+                        </div>
+                        
+                        <div className="flex justify-between mt-4 text-[9px] font-orbitron theme-text-secondary tracking-widest">
+                          <span className={rgbIntensity < 0.2 ? 'text-accent' : ''}>STEALTH_MODE</span>
+                          <span className={rgbIntensity > 0.8 ? 'text-accent' : ''}>OVERDRIVE</span>
+                        </div>
                       </div>
-                      <button 
-                        onClick={onToggleTheme}
-                        className={`w-12 h-6 rounded-full relative p-1 transition-colors duration-300 shadow-inner ${
-                          isDarkMode ? 'bg-accent' : 'bg-gray-400'
-                        }`}
-                      >
-                        <div className={`w-4 h-4 bg-white rounded-full shadow transition-all duration-300 transform ${
-                          isDarkMode ? 'translate-x-6' : 'translate-x-0'
-                        }`} />
-                      </button>
+
+                      <div className="theme-bg-primary p-6 border theme-border rounded-sm">
+                        <h4 className="theme-text-primary font-orbitron font-bold mb-6 text-xs tracking-widest uppercase">CHROMA_SYNC_COLOR</h4>
+                        <div className="flex flex-wrap gap-4">
+                          {ACCENT_COLORS.map(color => (
+                            <button 
+                              key={color.hex}
+                              onClick={() => onAccentColorChange(color.hex)}
+                              style={{ backgroundColor: color.hex, boxShadow: accentColor === color.hex ? `0 0 ${20 * rgbIntensity}px ${color.hex}` : 'none' }}
+                              className={`w-12 h-12 rounded-sm border-2 transition-all ${
+                                accentColor === color.hex 
+                                  ? 'border-white scale-110 z-10' 
+                                  : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'
+                              }`}
+                            />
+                          ))}
+                          <div className="relative w-12 h-12">
+                            <input 
+                              type="color" 
+                              value={accentColor}
+                              onChange={(e) => onAccentColorChange(e.target.value)}
+                              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                            />
+                            <div className="w-full h-full rounded-sm border-2 border-dashed border-gray-600 flex items-center justify-center theme-text-secondary hover:border-accent transition-colors">
+                              <span className="text-lg">+</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <p className="theme-text-secondary text-[10px] uppercase font-orbitron tracking-tight leading-relaxed">
-                      {isDarkMode 
-                        ? 'Forced GX Dark Protocol is currently powering your terminal.' 
-                        : 'Light Mode Protocol active. Optical clarity increased for daytime operations.'}
-                    </p>
                   </div>
-                  
-                  <div className="theme-bg-primary p-5 md:p-6 border theme-border rounded-sm">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="theme-text-primary text-xs md:text-sm font-orbitron tracking-widest uppercase">RGB INTENSITY</span>
-                      <span className="text-accent font-orbitron text-xs">{Math.round(rgbIntensity * 100)}%</span>
-                    </div>
-                    <input 
-                      type="range" 
-                      min="0"
-                      max="1"
-                      step="0.1"
-                      value={rgbIntensity}
-                      onChange={(e) => onRgbIntensityChange(parseFloat(e.target.value))}
-                      className="w-full accent-accent bg-gray-300 dark:bg-gray-800 h-1 rounded-lg cursor-pointer" 
-                    />
-                    <div className="flex justify-between mt-2 text-[10px] font-orbitron theme-text-secondary">
-                      <span>STEALTH</span>
-                      <span>MAX GLOW</span>
+
+                  <div>
+                    <h3 className="theme-text-primary font-orbitron font-bold mb-6 flex items-center gap-2 text-sm md:text-base">
+                      <Moon size={18} className="text-accent" />
+                      INTERFACE_THEME
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button 
+                        onClick={() => !isDarkMode && onToggleTheme()}
+                        className={`p-6 border flex flex-col items-center gap-3 transition-all ${isDarkMode ? 'border-accent bg-accent/5' : 'theme-border opacity-50 hover:opacity-100'}`}
+                      >
+                        <Moon size={24} className={isDarkMode ? 'text-accent' : ''} />
+                        <span className="font-orbitron text-[10px] tracking-widest uppercase">Dark_Net</span>
+                      </button>
+                      <button 
+                        onClick={() => isDarkMode && onToggleTheme()}
+                        className={`p-6 border flex flex-col items-center gap-3 transition-all ${!isDarkMode ? 'border-accent bg-accent/5' : 'theme-border opacity-50 hover:opacity-100'}`}
+                      >
+                        <Sun size={24} className={!isDarkMode ? 'text-accent' : ''} />
+                        <span className="font-orbitron text-[10px] tracking-widest uppercase">Day_Sight</span>
+                      </button>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div>
-                <h3 className="theme-text-primary font-orbitron font-bold mb-6 tracking-widest uppercase text-sm md:text-base">ACCENT COLOR</h3>
-                <div className="flex flex-wrap gap-4">
-                  {ACCENT_COLORS.map(color => (
-                    <div key={color.hex} className="flex flex-col items-center gap-2">
-                      <button 
-                        onClick={() => onAccentColorChange(color.hex)}
-                        style={{ backgroundColor: color.hex }}
-                        title={color.name}
-                        className={`w-12 h-12 rounded-sm border-2 transition-all hover:scale-110 active:scale-95 ${
-                          accentColor === color.hex 
-                            ? 'border-white dark:border-white shadow-[0_0_15px_rgba(255,255,255,0.5)] scale-110' 
-                            : 'border-transparent opacity-60 hover:opacity-100'
-                        }`}
-                      />
-                      <span className={`text-[8px] font-orbitron uppercase tracking-tighter transition-colors ${accentColor === color.hex ? 'text-accent' : 'theme-text-secondary'}`}>
-                        {color.name.split(' ')[1]}
-                      </span>
-                    </div>
-                  ))}
-                  
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative w-12 h-12">
-                      <input 
-                        type="color" 
-                        value={accentColor}
-                        onChange={(e) => onAccentColorChange(e.target.value)}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                      />
-                      <div 
-                        className="w-full h-full rounded-sm border-2 border-dashed border-gray-500 flex items-center justify-center theme-text-secondary"
-                        style={{ backgroundColor: !ACCENT_COLORS.some(c => c.hex === accentColor) ? accentColor : 'transparent' }}
-                      >
-                        <span className="text-[10px] font-bold">+</span>
+                {/* Live Preview Area */}
+                <div className="lg:col-span-5">
+                  <div className="sticky top-8">
+                    <h3 className="theme-text-primary font-orbitron font-bold mb-6 text-xs tracking-widest uppercase text-center">LIVE_PREVIEW_ANALYSIS</h3>
+                    <div className="theme-bg-primary border theme-border aspect-square rounded-sm p-8 flex flex-col items-center justify-center relative overflow-hidden group">
+                      {/* Decorative grid */}
+                      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(var(--accent-color) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                      
+                      {/* Glowing Sample Component */}
+                      <div className="relative z-10 w-48 h-48 flex items-center justify-center">
+                        <div 
+                          className="absolute inset-0 rounded-full border-4 border-accent opacity-20"
+                          style={{ boxShadow: `0 0 ${60 * rgbIntensity}px ${accentColor}`, opacity: 0.1 + (0.5 * rgbIntensity) }}
+                        />
+                        <div className="absolute inset-4 rounded-full border-2 border-dashed border-accent/30 animate-[spin_10s_linear_infinite]" />
+                        <Cpu 
+                          size={80} 
+                          className="text-accent relative z-20 transition-all duration-500"
+                          style={{ 
+                            filter: `drop-shadow(0 0 ${15 * rgbIntensity}px ${accentColor})`,
+                            transform: `scale(${1 + (0.1 * rgbIntensity)})`
+                          }} 
+                        />
+                        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-32 h-1 bg-accent/20">
+                          <div className="h-full bg-accent gx-pulse" style={{ width: `${rgbIntensity * 100}%` }} />
+                        </div>
+                      </div>
+
+                      <div className="mt-20 text-center space-y-2">
+                         <div className="text-accent font-orbitron font-black text-xl tracking-tighter uppercase">CORE_STABILITY</div>
+                         <div className="theme-text-secondary font-mono text-[9px] uppercase tracking-widest">
+                           {rgbIntensity > 0.8 ? 'WARNING: HIGH THERMAL OUTPUT' : 'STATUS: NOMINAL OPERATION'}
+                         </div>
                       </div>
                     </div>
-                    <span className="text-[8px] font-orbitron theme-text-secondary uppercase tracking-tighter">Custom</span>
                   </div>
                 </div>
               </div>
