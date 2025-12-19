@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart, Menu } from 'lucide-react';
+import { ShoppingBag, Zap, Cpu, MousePointer2, ChevronRight, X, Trash2, Search, Heart, Menu, Play } from 'lucide-react';
 import { supabase } from './services/supabaseClient';
 import Sidebar from './components/Sidebar';
 import ProductCard from './components/ProductCard';
@@ -151,7 +151,12 @@ const App: React.FC = () => {
               <div className="relative z-10 max-w-2xl">
                 <h1 className="text-8xl font-orbitron font-black mb-6">BEYOND <span className="text-accent gx-glow">LIMITS.</span></h1>
                 <p className="theme-text-secondary text-lg mb-8">Upgrade your setup with the world's most aggressive hardware.</p>
-                <button onClick={() => document.getElementById('market-grid')?.scrollIntoView()} className="bg-accent px-8 py-4 font-orbitron font-bold">BROWSE GEAR</button>
+                <div className="flex flex-wrap gap-4">
+                  <button onClick={() => document.getElementById('market-grid')?.scrollIntoView()} className="bg-accent px-8 py-4 font-orbitron font-bold text-white shadow-accent hover:opacity-90 transition-all">BROWSE GEAR</button>
+                  <button onClick={() => setActiveSection('trailers')} className="border border-accent px-8 py-4 font-orbitron font-bold text-accent hover:bg-accent hover:text-white transition-all flex items-center gap-2 group">
+                    <Play size={18} fill="currentColor" className="group-hover:scale-110 transition-transform" /> WATCH TRAILERS
+                  </button>
+                </div>
               </div>
             </section>
             <div id="market-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-8">
