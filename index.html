@@ -52,11 +52,37 @@
         }
         
         .gx-glow {
-            text-shadow: 0 0 calc(15px * var(--glow-intensity)) var(--accent-color);
+            text-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent-color);
         }
         
         .gx-border-glow {
-            box-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent-color);
+            box-shadow: 0 0 calc(25px * var(--glow-intensity)) var(--accent-color);
+        }
+
+        /* Scanline Effect reactive to intensity */
+        .gx-scanline::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 1000;
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            opacity: calc(0.15 * var(--glow-intensity));
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: calc(0.6 * var(--glow-intensity)); }
+            50% { opacity: calc(1 * var(--glow-intensity)); }
+        }
+
+        .gx-pulse {
+            animation: pulse-glow 2s ease-in-out infinite;
         }
 
         /* Utility classes for dynamic colors */
@@ -72,6 +98,12 @@
         .bg-accent { background-color: var(--accent-color) !important; }
         .border-accent { border-color: var(--accent-color) !important; }
         .shadow-accent { box-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent-color); }
+        
+        /* Interactive border that uses the theme accent */
+        .hover-border-accent:hover {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 calc(15px * var(--glow-intensity)) var(--accent-color);
+        }
     </style>
 <script type="importmap">
 {
@@ -85,8 +117,8 @@
 }
 </script>
 </head>
-<body>
+<body class="gx-scanline">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
