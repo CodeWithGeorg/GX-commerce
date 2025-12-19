@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn, ChevronRight, X, Gift, Sparkles, Cpu } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn, ChevronRight, X, Gift, Sparkles, Cpu, Clock } from 'lucide-react';
 
 interface ProfileProps {
   user: { name: string } | null;
@@ -42,27 +42,35 @@ const REWARDS: Reward[] = [
     type: 'Hardware',
     description: 'Military-grade cordura surface for pixel-perfect tracking.',
     image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=200'
-  },
-  {
-    id: 'r4',
-    name: 'Elite Profile Badge',
-    cost: 2000,
-    type: 'Digital',
-    description: 'Animated "Vanguard" badge next to your alias.',
-    image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=200'
   }
 ];
 
 const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavigateToSettings }) => {
-  const [xpBalance, setXpBalance] = useState(12450);
+  // Start new members with 0 XP or a small starter gift
+  const [xpBalance, setXpBalance] = useState(0);
+  const [orders, setOrders] = useState<any[]>([]);
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
   const [redeemedIds, setRedeemedIds] = useState<string[]>([]);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [isInitializing, setIsInitializing] = useState(false);
 
-  const mockOrders = [
-    { id: 'GX-9281', date: '2025-05-12', total: 410000, status: 'Delivered' },
-    { id: 'GX-8822', date: '2025-04-28', total: 15800, status: 'Processing' },
-  ];
+  // Initialize profile when user logs in
+  useEffect(() => {
+    if (user) {
+      setIsInitializing(true);
+      // Simulate database initialization for the "cool" factor
+      const timer = setTimeout(() => setIsInitializing(false), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
+  const handleClaimStarterBonus = () => {
+    if (xpBalance === 0) {
+      setXpBalance(1000);
+      setSuccessMsg("STARTER_BONUS: +1000 XP ADDED");
+      setTimeout(() => setSuccessMsg(null), 3000);
+    }
+  };
 
   const handleRedeem = (reward: Reward) => {
     if (xpBalance >= reward.cost && !redeemedIds.includes(reward.id)) {
@@ -100,6 +108,18 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
     );
   }
 
+  if (isInitializing) {
+    return (
+      <div className="h-[70vh] flex flex-col items-center justify-center space-y-4">
+        <Cpu size={48} className="text-accent animate-spin" />
+        <h2 className="font-orbitron font-black text-accent text-xl animate-pulse tracking-widest">INITIALIZING_PERSONAL_GRID...</h2>
+        <div className="w-64 h-1 bg-white/10 overflow-hidden">
+          <div className="h-full bg-accent animate-[shimmer_1.5s_infinite] w-1/3" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <section className="container mx-auto px-8 py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -120,14 +140,16 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
                 />
               </div>
               <h2 className="text-2xl font-orbitron font-black theme-text-primary mb-1 uppercase">{user.name}</h2>
-              <span className="text-accent font-orbitron text-[10px] tracking-widest uppercase mb-6">Elite Tech Specialist</span>
+              <span className="text-accent font-orbitron text-[10px] tracking-widest uppercase mb-6">
+                {xpBalance > 5000 ? 'Elite Specialist' : 'New Recruit'}
+              </span>
               
               <div className="w-full theme-bg-primary h-2 rounded-full mb-2 overflow-hidden border theme-border">
-                <div className="bg-accent h-full w-[75%] shadow-accent" />
+                <div className="bg-accent h-full shadow-accent transition-all duration-1000" style={{ width: `${Math.min(100, (xpBalance / 10000) * 100)}%` }} />
               </div>
               <div className="flex justify-between w-full text-[10px] font-orbitron theme-text-secondary uppercase">
-                <span>Level 42</span>
-                <span>Next Rank: Commander</span>
+                <span>Rank: {xpBalance > 5000 ? 'Veteran' : 'Private'}</span>
+                <span>{10000 - xpBalance} XP to Next Rank</span>
               </div>
             </div>
           </div>
@@ -143,53 +165,71 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
             )}
             <h3 className="theme-text-primary font-orbitron font-bold text-sm mb-6 flex items-center gap-2">
               <Award size={18} className="text-accent" />
-              GX REWARDS
+              GX CREDITS
             </h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center theme-bg-primary p-4 rounded-sm border theme-border">
-                <span className="theme-text-secondary text-xs font-orbitron">TOTAL CREDITS</span>
-                <span className="theme-text-primary font-orbitron font-bold">{xpBalance.toLocaleString()} XP</span>
+                <span className="theme-text-secondary text-[10px] font-orbitron uppercase tracking-widest">Available XP</span>
+                <span className="theme-text-primary font-orbitron font-bold text-lg">{xpBalance.toLocaleString()}</span>
               </div>
-              <button 
-                onClick={() => setIsRewardsOpen(true)}
-                className="w-full py-3 bg-accent hover:opacity-90 text-white text-xs font-orbitron font-bold transition-all rounded-sm shadow-accent flex items-center justify-center gap-2"
-              >
-                <Zap size={14} /> REDEEM GEAR
-              </button>
+              
+              {xpBalance === 0 ? (
+                <button 
+                  onClick={handleClaimStarterBonus}
+                  className="w-full py-4 bg-white text-black hover:opacity-90 font-orbitron font-black text-[10px] tracking-widest uppercase transition-all rounded-sm shadow-xl flex items-center justify-center gap-2"
+                >
+                  <Gift size={16} /> CLAIM_STARTER_XP
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setIsRewardsOpen(true)}
+                  className="w-full py-3 bg-accent hover:opacity-90 text-white text-[10px] font-orbitron font-bold tracking-widest uppercase transition-all rounded-sm shadow-accent flex items-center justify-center gap-2"
+                >
+                  <Zap size={14} /> REDEEM_GEAR
+                </button>
+              )}
             </div>
           </div>
         </div>
 
         {/* Right Column: Details & Activity */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="theme-bg-secondary border theme-border p-8 shadow-lg">
+          <div className="theme-bg-secondary border theme-border p-8 shadow-lg min-h-[400px]">
             <h3 className="text-xl font-orbitron font-black theme-text-primary mb-8 flex items-center gap-3">
               <Package size={24} className="text-accent" />
               MISSION LOG <span className="theme-text-secondary">/ ORDERS</span>
             </h3>
             
             <div className="space-y-4">
-              {mockOrders.map(order => (
-                <div key={order.id} className="flex items-center justify-between p-6 theme-bg-primary border theme-border hover:border-accent/50 transition-colors group">
-                  <div className="flex gap-6 items-center">
-                    <div className="w-12 h-12 theme-bg-tertiary flex items-center justify-center border theme-border group-hover:border-accent transition-colors">
-                      <Zap size={20} className="theme-text-secondary group-hover:text-accent" />
-                    </div>
-                    <div>
-                      <p className="theme-text-primary font-orbitron font-bold text-sm">{order.id}</p>
-                      <p className="theme-text-secondary text-[10px] uppercase font-orbitron">{order.date}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="theme-text-primary font-orbitron font-bold">KSh {order.total.toLocaleString()}</p>
-                    <span className={`text-[10px] uppercase font-orbitron px-2 py-1 rounded-sm ${
-                      order.status === 'Delivered' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </div>
+              {orders.length === 0 ? (
+                <div className="py-20 flex flex-col items-center justify-center text-center opacity-30 border-2 border-dashed theme-border">
+                  <Clock size={48} className="theme-text-secondary mb-4" />
+                  <p className="font-orbitron text-xs uppercase tracking-widest">No deployments detected in local grid.</p>
+                  <p className="text-[10px] mt-2">Initialize your first purchase to generate mission logs.</p>
                 </div>
-              ))}
+              ) : (
+                orders.map(order => (
+                  <div key={order.id} className="flex items-center justify-between p-6 theme-bg-primary border theme-border hover:border-accent/50 transition-colors group">
+                    <div className="flex gap-6 items-center">
+                      <div className="w-12 h-12 theme-bg-tertiary flex items-center justify-center border theme-border group-hover:border-accent transition-colors">
+                        <Zap size={20} className="theme-text-secondary group-hover:text-accent" />
+                      </div>
+                      <div>
+                        <p className="theme-text-primary font-orbitron font-bold text-sm">{order.id}</p>
+                        <p className="theme-text-secondary text-[10px] uppercase font-orbitron">{order.date}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="theme-text-primary font-orbitron font-bold">KSh {order.total.toLocaleString()}</p>
+                      <span className={`text-[10px] uppercase font-orbitron px-2 py-1 rounded-sm ${
+                        order.status === 'Delivered' ? 'bg-green-500/20 text-green-500' : 'bg-blue-500/20 text-blue-500'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -224,10 +264,6 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
         <div className="fixed inset-0 z-[160] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setIsRewardsOpen(false)} />
           <div className="relative w-full max-w-4xl theme-bg-secondary border theme-border shadow-accent animate-in zoom-in-95 duration-300 overflow-hidden">
-            {/* HUD Elements */}
-            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-accent/30 pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-accent/30 pointer-events-none" />
-
             <div className="p-8">
               <div className="flex justify-between items-center mb-8 border-b theme-border pb-6">
                 <div className="flex items-center gap-4">
@@ -286,15 +322,16 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
                   );
                 })}
               </div>
-
-              <div className="mt-8 pt-6 border-t theme-border flex items-center justify-between text-[10px] font-orbitron uppercase text-accent tracking-[0.2em] animate-pulse">
-                <span><Cpu size={12} className="inline mr-2" /> Syncing rewards grid...</span>
-                <span className="theme-text-secondary opacity-50">Hardware rewards ship to your primary uplink address.</span>
-              </div>
             </div>
           </div>
         </div>
       )}
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(300%); }
+        }
+      `}</style>
     </section>
   );
 };
