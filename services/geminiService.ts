@@ -2,10 +2,11 @@
 import { GoogleGenAI } from "@google/genai";
 import { Product } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const getShoppingAdvice = async (userMessage: string, availableProducts: Product[]) => {
   try {
+    // Fixed: Initializing GoogleGenAI inside the function to ensure it uses the latest process.env.API_KEY
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     const productsContext = availableProducts.map(p => 
       `[MODEL_ID: ${p.id}] ${p.name} | CAT: ${p.category} | COST: KSh ${p.price.toLocaleString()} | INTEL: ${p.description}`
     ).join('\n');
