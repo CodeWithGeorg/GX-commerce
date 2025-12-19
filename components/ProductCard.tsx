@@ -12,7 +12,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggleWishlist, isWishlisted }) => {
   return (
-    <div className="group theme-bg-secondary border theme-border hover:border-[#fa1e4e] transition-all duration-300 overflow-hidden relative shadow-md">
+    <div className="group theme-bg-secondary border theme-border hover-border-accent transition-all duration-300 overflow-hidden relative shadow-md">
       <div className="relative aspect-video overflow-hidden">
         <img 
           src={product.image} 
@@ -26,14 +26,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
             onToggleWishlist(product.id);
           }}
           className={`absolute top-2 right-2 p-2 rounded-full backdrop-blur-md transition-all duration-300 z-10 ${
-            isWishlisted ? 'bg-[#fa1e4e] text-white' : 'bg-black/40 text-gray-200 hover:text-white'
+            isWishlisted ? 'bg-accent text-white' : 'bg-black/40 text-gray-200 hover:text-white'
           }`}
         >
           <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
         </button>
 
         {product.isNew && (
-          <div className="absolute top-2 left-2 bg-[#fa1e4e] text-white text-[10px] font-bold px-2 py-1 rounded-sm font-orbitron uppercase">
+          <div className="absolute top-2 left-2 bg-accent text-white text-[10px] font-bold px-2 py-1 rounded-sm font-orbitron uppercase">
             New Gear
           </div>
         )}
@@ -42,14 +42,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
 
       <div className="p-4 flex flex-col h-40">
         <div className="flex justify-between items-start mb-2">
-          <span className="text-[10px] text-[#fa1e4e] font-orbitron uppercase tracking-widest">{product.category}</span>
+          <span className="text-[10px] text-accent font-orbitron uppercase tracking-widest">{product.category}</span>
           <div className="flex items-center gap-1 text-xs text-yellow-500">
             <Star size={12} fill="currentColor" />
             <span>{product.rating}</span>
           </div>
         </div>
         
-        <h3 className="theme-text-primary font-bold group-hover:text-[#fa1e4e] transition-colors line-clamp-1 mb-2 font-orbitron text-sm">
+        <h3 className="theme-text-primary font-bold group-hover:text-accent transition-colors line-clamp-1 mb-2 font-orbitron text-sm">
           {product.name}
         </h3>
         
@@ -61,14 +61,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onToggl
           <span className="text-sm font-orbitron font-bold theme-text-primary">KSh {product.price.toLocaleString()}</span>
           <button 
             onClick={() => onAddToCart(product)}
-            className="w-10 h-10 theme-bg-tertiary group-hover:bg-[#fa1e4e] group-hover:text-white flex items-center justify-center transition-all duration-300 rounded-sm"
+            className="w-10 h-10 theme-bg-tertiary group-hover:bg-accent group-hover:text-white flex items-center justify-center transition-all duration-300 rounded-sm"
           >
             <Plus size={20} className="theme-text-primary group-hover:text-white" />
           </button>
         </div>
       </div>
       
-      <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-l-[30px] border-t-transparent border-l-transparent group-hover:border-t-[#fa1e4e] transition-all duration-300 opacity-20" />
+      <div className="absolute top-0 right-0 w-0 h-0 border-t-[30px] border-l-[30px] border-t-transparent border-l-transparent group-hover:border-t-accent transition-all duration-300 opacity-20" />
     </div>
   );
 };
