@@ -111,7 +111,14 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'profile': return <Profile user={user} onLogout={handleLogout} onLoginClick={() => setIsAuthOpen(true)} />;
+      case 'profile': return (
+        <Profile 
+          user={user} 
+          onLogout={handleLogout} 
+          onLoginClick={() => setIsAuthOpen(true)} 
+          onNavigateToSettings={() => setActiveSection('settings')}
+        />
+      );
       case 'trailers': return <Trailers />;
       case 'settings': return (
         <Settings 
