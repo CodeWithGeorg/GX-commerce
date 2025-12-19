@@ -1,8 +1,7 @@
+import { createClient } from '@supabase/supabase-js';
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.1';
-
-// Replace these with your actual Supabase URL and Anon Key from your dashboard
-const supabaseUrl = 'https://your-project-id.supabase.co';
-const supabaseAnonKey = 'your-anon-key';
+// Load environment variables from .env file (ensure you have dotenv installed and configured if needed)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
