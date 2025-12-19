@@ -1,7 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Load environment variables from .env file (ensure you have dotenv installed and configured if needed)
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase URL and Anon Key are required. Check your .env file.');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
