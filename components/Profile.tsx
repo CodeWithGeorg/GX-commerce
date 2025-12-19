@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn, ChevronRight, X, Gift, Sparkles, Cpu, Clock } from 'lucide-react';
+import { User, Shield, Zap, Package, Award, Settings, LogOut, Lock, LogIn, ChevronRight, X, Gift, Sparkles, Cpu, Clock, Target, FileText, Globe, Users } from 'lucide-react';
 
 interface ProfileProps {
   user: { name: string } | null;
@@ -46,7 +46,6 @@ const REWARDS: Reward[] = [
 ];
 
 const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavigateToSettings }) => {
-  // Start new members with 0 XP or a small starter gift
   const [xpBalance, setXpBalance] = useState(0);
   const [orders, setOrders] = useState<any[]>([]);
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
@@ -54,11 +53,9 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
 
-  // Initialize profile when user logs in
   useEffect(() => {
     if (user) {
       setIsInitializing(true);
-      // Simulate database initialization for the "cool" factor
       const timer = setTimeout(() => setIsInitializing(false), 1500);
       return () => clearTimeout(timer);
     }
@@ -124,7 +121,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
     <section className="container mx-auto px-8 py-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left Column: User Summary */}
+        {/* Left Column: User Summary & Credits */}
         <div className="lg:col-span-1 space-y-8">
           <div className="theme-bg-secondary border theme-border p-8 relative overflow-hidden group shadow-lg">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -165,7 +162,7 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
             )}
             <h3 className="theme-text-primary font-orbitron font-bold text-sm mb-6 flex items-center gap-2">
               <Award size={18} className="text-accent" />
-              GX CREDITS
+              GX CREDITS (XP)
             </h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center theme-bg-primary p-4 rounded-sm border theme-border">
@@ -188,6 +185,32 @@ const Profile: React.FC<ProfileProps> = ({ user, onLogout, onLoginClick, onNavig
                   <Zap size={14} /> REDEEM_GEAR
                 </button>
               )}
+            </div>
+          </div>
+
+          {/* New Earning Protocols Card */}
+          <div className="theme-bg-secondary border theme-border p-6 shadow-md">
+            <h3 className="theme-text-primary font-orbitron font-bold text-xs mb-6 flex items-center gap-2 uppercase tracking-widest">
+              <Target size={16} className="text-accent" />
+              EARNING_PROTOCOLS
+            </h3>
+            <div className="space-y-4">
+               {[
+                 { icon: Package, title: "Field Deployment", desc: "10 XP for every KSh 1,000 spent on gear." },
+                 { icon: FileText, title: "Tech Review", desc: "+500 XP per submitted hardware field report." },
+                 { icon: Globe, title: "Daily Uplink", desc: "+50 XP for daily grid connection." },
+                 { icon: Users, title: "Network Expansion", desc: "+2000 XP per recruited operator." }
+               ].map((mission, i) => (
+                 <div key={i} className="flex gap-4 p-3 theme-bg-primary border border-white/5 rounded-sm hover:border-accent/30 transition-colors group">
+                    <div className="w-10 h-10 shrink-0 bg-accent/10 flex items-center justify-center rounded-sm">
+                       <mission.icon size={18} className="text-accent group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div>
+                      <h4 className="theme-text-primary font-orbitron font-bold text-[10px] uppercase">{mission.title}</h4>
+                      <p className="theme-text-secondary text-[9px] leading-tight mt-1">{mission.desc}</p>
+                    </div>
+                 </div>
+               ))}
             </div>
           </div>
         </div>
