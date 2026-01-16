@@ -19,7 +19,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
   const [status, setStatus] = useState('ONLINE');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Simulated Tactical Boot Sequence
+
   useEffect(() => {
     if (isOpen && isBooting) {
       const logs = [
@@ -67,7 +67,7 @@ const AIChat: React.FC<AIChatProps> = ({ isOpen, onClose, availableProducts }) =
     setStatus('READY');
   };
 
-  // Simple formatter to add tactical spans
+ 
   const formatText = (text: string) => {
     return text.split('\n').map((line, i) => {
       // Highlight Tactical Headers
