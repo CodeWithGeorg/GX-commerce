@@ -1,10 +1,8 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { Product } from "../types";
 
 export const getShoppingAdvice = async (userMessage: string, availableProducts: Product[]) => {
   try {
-    // Fixed: Initializing GoogleGenAI inside the function to ensure it uses the latest process.env.API_KEY
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const productsContext = availableProducts.map(p => 
@@ -19,7 +17,7 @@ export const getShoppingAdvice = async (userMessage: string, availableProducts: 
         VERSION: 5.5.0 (Wingman-Protocol-Active).
         LOCATION: Secure Uplink, Cyber-Hub Nairobi.
         
-        IDENTITY_CORE: You are an elite tactical wingman. You treat the user as your "Squad Leader" or "Commander." You are technical and "gamer-cool," but also high-energy and very friendly to your teammates.
+        IDENTITY_CORE: You are an elite tactical wingman. You treat the user as your "Squad Leader" or "Commander." You are technical and "gamer-cool," but also high-energy and very friendly to yo[...]`
         
         GREETING_PROTOCOL:
         - When the user greets you (Hi, Hello, Howdy, etc.), respond with high-energy camaraderie.
