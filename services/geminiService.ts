@@ -3,21 +3,21 @@ import { Product } from "../types";
 
 export const getShoppingAdvice = async (userMessage: string, availableProducts: Product[]) => {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     
     const productsContext = availableProducts.map(p => 
       `[MODEL_ID: ${p.id}] ${p.name} | CAT: ${p.category} | COST: KSh ${p.price.toLocaleString()} | INTEL: ${p.description}`
     ).join('\n');
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.0-flash-exp',
       contents: userMessage,
       config: {
         systemInstruction: `SYSTEM_IDENTITY: GX-ARES (Automated Research & Equipment Specialist).
         VERSION: 5.5.0 (Wingman-Protocol-Active).
         LOCATION: Secure Uplink, Cyber-Hub Nairobi.
         
-        IDENTITY_CORE: You are an elite tactical wingman. You treat the user as your "Squad Leader" or "Commander." You are technical and "gamer-cool," but also high-energy and very friendly to yo[...]`
+        IDENTITY_CORE: You are an elite tactical wingman. You treat the user as your "Squad Leader" or "Commander." You are technical and "gamer-cool," but also high-energy and very friendly to your Commander.
         
         GREETING_PROTOCOL:
         - When the user greets you (Hi, Hello, Howdy, etc.), respond with high-energy camaraderie.
