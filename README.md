@@ -7,7 +7,6 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?style=flat-square&logo=vite)
 ![Supabase](https://img.shields.io/badge/Supabase-2.89-3FCF8E?style=flat-square&logo=supabase)
-![Google Gemini](https://img.shields.io/badge/Gemini-1.34.0-4285F4?style=flat-square&logo=google)
 
 _A futuristic gaming e-commerce platform with AI-powered shopping assistance_
 
@@ -379,9 +378,29 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 For questions or issues:
 
-1. Check the [Issues](https://github.com/yourusername/gx-commerce/issues) page
+1. Check the [Issues](https://github.com/CodeWithGeorg/gx-commerce/issues) page
 2. Review the documentation above
 3. Check environment variable configuration
+
+---
+
+## ☕ Support the Project
+
+If you enjoy GX Commerce and want to support its development, consider buying me a coffee! Every bit of support helps keep the project alive and improving.
+
+<a href="https://buymeacoffee.com/CodeWithGeorg" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 160px !important;" />
+</a>
+
+---
+
+## 🏆 Sponsors
+
+Become a sponsor and get your logo here, early access to features, and priority support!
+
+<a href="https://github.com/sponsors/CodeWithGeorg" target="_blank">
+  <img src="https://img.shields.io/badge/Become-a_Sponsor-FA1E4E?style=for-the-badge&logo=github-sponsors" alt="Sponsor" />
+</a>
 
 ---
 
